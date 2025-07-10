@@ -1,0 +1,1 @@
+add_executable(poker-client "main.cpp" "main.h")
