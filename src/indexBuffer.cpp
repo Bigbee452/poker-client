@@ -1,0 +1,24 @@
+#include "indexBuffer.h"
+#include <glad/glad.h>
+
+index_buffer::index_buffer(){
+    glGenBuffers(1, &buffer_id);
+}
+
+index_buffer::~index_buffer(){
+    glDeleteBuffers(1, &buffer_id);
+}
+
+void index_buffer::set_data(unsigned int* data, unsigned int count){
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);
+}
+
+void index_buffer::bind(){
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id);
+}
+
+void index_buffer::unbind(){
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER ,buffer_id);    
+}
