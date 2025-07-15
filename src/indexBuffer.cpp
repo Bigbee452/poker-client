@@ -9,7 +9,9 @@ index_buffer::~index_buffer(){
     glDeleteBuffers(1, &buffer_id);
 }
 
-void index_buffer::set_data(unsigned int* data, unsigned int count){
+void index_buffer::set_data(unsigned int* data, unsigned int in_count){
+    count = in_count;
+    
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id);
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);

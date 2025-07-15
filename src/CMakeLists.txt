@@ -1,1 +1,1 @@
-add_executable(poker-client "main.cpp" "main.h" "vertexBuffer.cpp" "vertexBuffer.h" "indexBuffer.cpp" "indexBuffer.h")
+add_executable(poker-client "main.cpp" "main.h" "vertexBuffer.cpp" "vertexBuffer.h" "indexBuffer.cpp" "indexBuffer.h" "utils.cpp" "utils.h" "shader.cpp" "shader.h")
