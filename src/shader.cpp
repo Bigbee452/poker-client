@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include "shader.h"
 #include <fstream>
+#include <glm/ext/matrix_float4x4.hpp>
 #include <sstream>
 #include <iostream>
 
@@ -99,3 +100,8 @@ void Shader::set_float(const std::string &name, float value) const
 { 
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
 } 
+
+void Shader::set_mat4(const std::string &name, glm::mat4& matrix) const {
+    int modelLoc = glGetUniformLocation(ID, name.c_str());
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+}
