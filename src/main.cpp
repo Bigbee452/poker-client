@@ -69,19 +69,50 @@ int main()
     glEnable(GL_DEPTH_TEST); 
 
     Shader defaultShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
+    Shader lightShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_LIGHT_FRAGMENT_SHADER_PATH);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
+    /*
     float vertices[] = {
         0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //top
         -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, //left
         0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, //bottom
         0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f //right
     };
+    */
+    float vertices[] = {
+         1.0,  1.0,  -1.0, 0.5774, 0.5773, -0.5773, 
+         1.0,  -1.0, -1.0, 0.5774, -0.5773, -0.5773, 
+         1.0,  1.0,  1.0, 0.5774, 0.5773, 0.5773, 
+         1.0,  -1.0, 1.0, 0.5774, -0.5773, 0.5773, 
+         -1.0, 1.0,  -1.0, -0.5774, 0.5773, -0.5773, 
+         -1.0, -1.0, -1.0, -0.5774, -0.5773, -0.5773, 
+         -1.0, 1.0,  1.0, -0.5774, 0.5773, 0.5773, 
+         -1.0, -1.0, 1.0, -0.5774, -0.5773, 0.5773    
+    };
+
+    /*
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 2,   // first triangle
         0, 2, 3, 
     }; 
+    */
+
+    unsigned int indices[] = {
+        4, 2, 0,
+        2, 7, 3,
+        6, 5, 7,
+        1, 7, 5,
+        0, 3, 1,
+        4, 1, 5,
+        4, 6, 2,
+        2, 6, 7,
+        6, 4, 5,
+        1, 3, 7,
+        0, 2, 3,
+        4, 0, 1
+    };
 
     glm::vec3 cameraPos = glm::vec3(10.0f, 0.0f, 0.0f);  
 
@@ -90,8 +121,12 @@ int main()
 
     Camera cam(cameraPos, cameraDirection);
 
+    glm::vec3 lightPos(3.2f, 1.0f, 2.0f);
+
     vertex_buffer* buffer = new vertex_buffer();
     buffer->set_data(vertices, sizeof(vertices)/sizeof(float));
+
+    vertex_buffer* light_buffer = new vertex_buffer();
 
     index_buffer* indexBuffer = new index_buffer();
     indexBuffer->set_data(indices, sizeof(indices)/sizeof(unsigned int));
@@ -137,11 +172,40 @@ int main()
         defaultShader.set_mat4("model", model);
         defaultShader.set_mat4("view", view);
         defaultShader.set_mat4("projection", projection);
+        defaultShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
+        defaultShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
+
+        //set material
+        defaultShader.set_vec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        defaultShader.set_vec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        defaultShader.set_vec3("material.specular", 0.5f, 0.5f, 0.5f);
+        defaultShader.set_float("material.shininess", 32.0f);
+
+        //set light
+        defaultShader.set_vec3("light.position", lightPos);
+        defaultShader.set_vec3("light.ambient",  0.2f, 0.2f, 0.2f);
+        defaultShader.set_vec3("light.diffuse",  0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+        defaultShader.set_vec3("light.specular", 1.0f, 1.0f, 1.0f); 
+
+        glm::vec3 cam_pos = cam.get_pos();
+        defaultShader.set_vec3("viewPos", cam_pos); 
         buffer->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         indexBuffer->bind();
         glDrawElements(GL_TRIANGLES, indexBuffer->count, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time 
- 
+
+        lightShader.bind();
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); 
+        lightShader.set_mat4("model", model);
+        lightShader.set_mat4("view", view);
+        lightShader.set_mat4("projection", projection);
+        lightShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
+        lightShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
+
+        glDrawElements(GL_TRIANGLES, indexBuffer->count, GL_UNSIGNED_INT, 0);
+
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);

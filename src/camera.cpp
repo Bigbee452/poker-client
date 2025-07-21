@@ -35,3 +35,7 @@ glm::mat4 Camera::get_view(){
 
     return glm::lookAt(pos, rot-pos, up);
 }
+
+glm::vec3 Camera::get_pos(){
+    return pos;
+}

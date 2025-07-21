@@ -2,6 +2,7 @@
 #include "shader.h"
 #include <fstream>
 #include <glm/ext/matrix_float4x4.hpp>
+#include <glm/fwd.hpp>
 #include <sstream>
 #include <iostream>
 
@@ -104,4 +105,14 @@ void Shader::set_float(const std::string &name, float value) const
 void Shader::set_mat4(const std::string &name, glm::mat4& matrix) const {
     int modelLoc = glGetUniformLocation(ID, name.c_str());
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::set_vec3(const std::string &name, glm::vec3& vec) const {
+    int modelLoc = glGetUniformLocation(ID, name.c_str());
+    glUniform3fv(modelLoc, 1, &vec[0]);
+}
+
+void Shader::set_vec3(const std::string &name, float x, float y, float z) const {
+    glm::vec3 vec = glm::vec3(x, y, z);
+    set_vec3(name, vec);
 }

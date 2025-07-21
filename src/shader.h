@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/fwd.hpp>
 #include  <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,4 +20,6 @@ public:
     void set_int(const std::string &name, int value) const;   
     void set_float(const std::string &name, float value) const;
     void set_mat4(const std::string &name, glm::mat4& matrix) const;
+    void set_vec3(const std::string &name, glm::vec3& vec) const;
+    void set_vec3(const std::string &name, float x, float y, float z) const;
 };

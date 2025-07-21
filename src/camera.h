@@ -12,6 +12,7 @@ public:
     void set_rot(glm::vec2 rot_in);
     void set_direction(glm::vec3 direction);
     glm::mat4 get_view();
+    glm::vec3 get_pos();
 private:
     glm::vec3 pos;
     glm::vec3 rot;
