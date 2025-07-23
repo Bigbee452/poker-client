@@ -11,16 +11,18 @@ vertex_buffer::~vertex_buffer(){
     glDeleteBuffers(1, &buffer_id);
 }
 
-void vertex_buffer::set_data(float* data, unsigned int count){
+void vertex_buffer::set_data(std::vector<Vertex> vertices){
     glBindVertexArray(vertex_array_id);
     glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
 
-    glBufferData(GL_ARRAY_BUFFER, count*sizeof(float), data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // vertex positions
+    glEnableVertexAttribArray(0);	
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);	
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 }
 
 void vertex_buffer::bind(){

@@ -3,34 +3,23 @@
 #include <iostream>
 #include "main.h"
 #include "camera.h"
-#include "vertexBuffer.h"
-#include "indexBuffer.h"
+#include "mesh.h"
 #include "shader.h"
 #include "camera.h"
-
+#include "model.h"
+#include "../include/stb_image.h"
+#include "vertexBuffer.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 void processInput(GLFWwindow *window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
 
 glm::mat4 projection    = glm::mat4(1.0f);
 
@@ -46,7 +35,6 @@ int main()
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
@@ -73,24 +61,21 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    /*
     float vertices[] = {
         0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //top
         -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, //left
         0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, //bottom
         0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f //right
     };
-    */
-    float vertices[] = {
-         1.0,  1.0,  -1.0, 0.5774, 0.5773, -0.5773, 
-         1.0,  -1.0, -1.0, 0.5774, -0.5773, -0.5773, 
-         1.0,  1.0,  1.0, 0.5774, 0.5773, 0.5773, 
-         1.0,  -1.0, 1.0, 0.5774, -0.5773, 0.5773, 
-         -1.0, 1.0,  -1.0, -0.5774, 0.5773, -0.5773, 
-         -1.0, -1.0, -1.0, -0.5774, -0.5773, -0.5773, 
-         -1.0, 1.0,  1.0, -0.5774, 0.5773, 0.5773, 
-         -1.0, -1.0, 1.0, -0.5774, -0.5773, 0.5773    
-    };
+
+    std::vector<Vertex> verices_vector = {};
+    for(int i = 0; i < sizeof(vertices)/(6*sizeof(float)); i++){
+        Vertex vertex;
+        vertex.Position = glm::vec3(vertices[i], vertices[i+1], vertices[i+2]);
+        vertex.Normal = glm::vec3(vertices[i+3], vertices[i+4], vertices[i+5]);
+        verices_vector.push_back(vertex);
+    }
+
 
     /*
     unsigned int indices[] = {  // note that we start from 0!
@@ -114,7 +99,14 @@ int main()
         4, 0, 1
     };
 
-    glm::vec3 cameraPos = glm::vec3(10.0f, 0.0f, 0.0f);  
+    std::vector<unsigned int> indices_vertices;
+    for(int i = 0; i < sizeof(indices)/sizeof(unsigned int); i++){
+        indices_vertices.push_back(indices[i]);
+    }
+
+    Model myModel(DEFAULT_MODEL_PATH);
+
+    glm::vec3 cameraPos = glm::vec3(20.0f, 0.0f, 0.0f);  
 
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
@@ -123,13 +115,7 @@ int main()
 
     glm::vec3 lightPos(3.2f, 1.0f, 2.0f);
 
-    vertex_buffer* buffer = new vertex_buffer();
-    buffer->set_data(vertices, sizeof(vertices)/sizeof(float));
-
-    vertex_buffer* light_buffer = new vertex_buffer();
-
-    index_buffer* indexBuffer = new index_buffer();
-    indexBuffer->set_data(indices, sizeof(indices)/sizeof(unsigned int));
+    stbi_set_flip_vertically_on_load(true);
 
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     // uncomment this call to draw in wireframe polygons.
@@ -175,23 +161,8 @@ int main()
         defaultShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
         defaultShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
 
-        //set material
-        defaultShader.set_vec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        defaultShader.set_vec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-        defaultShader.set_vec3("material.specular", 0.5f, 0.5f, 0.5f);
-        defaultShader.set_float("material.shininess", 32.0f);
 
-        //set light
-        defaultShader.set_vec3("light.position", lightPos);
-        defaultShader.set_vec3("light.ambient",  0.2f, 0.2f, 0.2f);
-        defaultShader.set_vec3("light.diffuse",  0.5f, 0.5f, 0.5f); // darken diffuse light a bit
-        defaultShader.set_vec3("light.specular", 1.0f, 1.0f, 1.0f); 
-
-        glm::vec3 cam_pos = cam.get_pos();
-        defaultShader.set_vec3("viewPos", cam_pos); 
-        buffer->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        indexBuffer->bind();
-        glDrawElements(GL_TRIANGLES, indexBuffer->count, GL_UNSIGNED_INT, 0);
+        myModel.Draw(defaultShader);
 
         lightShader.bind();
         model = glm::mat4(1.0f);
@@ -203,20 +174,11 @@ int main()
         lightShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
 
-        glDrawElements(GL_TRIANGLES, indexBuffer->count, GL_UNSIGNED_INT, 0);
-
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-    delete indexBuffer;
-    delete buffer;
-
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();

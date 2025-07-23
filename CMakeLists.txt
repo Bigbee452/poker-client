@@ -15,5 +15,6 @@ target_include_directories(glad PUBLIC external/glad/include)
 
 add_subdirectory(external/glm)
 add_subdirectory(src)
+target_include_directories(poker-client PRIVATE include)
 
 target_link_libraries(poker-client PRIVATE glad glfw assimp)
