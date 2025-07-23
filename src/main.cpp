@@ -7,12 +7,12 @@
 #include "camera.h"
 #include "model.h"
 #include "../include/stb_image.h"
-#include "vertexBuffer.h"
+#include "utils.h"
+#include "scene.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <vector>
 
 void processInput(GLFWwindow *window);
 
@@ -22,8 +22,12 @@ const unsigned int SCR_HEIGHT = 600;
 
 glm::mat4 projection    = glm::mat4(1.0f);
 
-int main()
+Scene* myScene;
+
+int main(int argc, char* argv[])
 {
+
+    static std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -55,72 +59,21 @@ int main()
 
     glEnable(GL_DEPTH_TEST); 
 
-    Shader defaultShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
-    Shader lightShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_LIGHT_FRAGMENT_SHADER_PATH);
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-        0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //top
-        -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, //left
-        0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, //bottom
-        0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f //right
-    };
-
-    std::vector<Vertex> verices_vector = {};
-    for(int i = 0; i < sizeof(vertices)/(6*sizeof(float)); i++){
-        Vertex vertex;
-        vertex.Position = glm::vec3(vertices[i], vertices[i+1], vertices[i+2]);
-        vertex.Normal = glm::vec3(vertices[i+3], vertices[i+4], vertices[i+5]);
-        verices_vector.push_back(vertex);
-    }
-
-
-    /*
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 2,   // first triangle
-        0, 2, 3, 
-    }; 
-    */
-
-    unsigned int indices[] = {
-        4, 2, 0,
-        2, 7, 3,
-        6, 5, 7,
-        1, 7, 5,
-        0, 3, 1,
-        4, 1, 5,
-        4, 6, 2,
-        2, 6, 7,
-        6, 4, 5,
-        1, 3, 7,
-        0, 2, 3,
-        4, 0, 1
-    };
-
-    std::vector<unsigned int> indices_vertices;
-    for(int i = 0; i < sizeof(indices)/sizeof(unsigned int); i++){
-        indices_vertices.push_back(indices[i]);
-    }
-
-    Model myModel(DEFAULT_MODEL_PATH);
-    Model lightObject(DEFAULT_LIGHT_MODEL);
-
     glm::vec3 cameraPos = glm::vec3(20.0f, 0.0f, 0.0f);  
-
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
-    Camera cam(cameraPos, cameraDirection);
+    myScene = new Scene(exePath);
+    myScene->cam->set_pos(cameraPos);
+    myScene->cam->set_direction(cameraDirection);
 
     glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
-    lightObject.setPosition(lightPos);
+    myScene->light_pos = lightPos;
+
+    myScene->add_model(exePath/"models"/"model.obj");
+    myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
 
     stbi_set_flip_vertically_on_load(true);
-
-    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -145,32 +98,15 @@ int main()
         glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
-        cam.set_pos(cameraPos);
-        cam.set_direction(cameraDirection);
+        myScene->cam->set_pos(cameraPos);
+        myScene->cam->set_direction(cameraDirection);
 
-        glm::mat4 view = cam.get_view();
 
-        // draw our first triangle
-        defaultShader.bind();
-        defaultShader.set_mat4("view", view);
-        defaultShader.set_mat4("projection", projection);
-        defaultShader.set_vec3("light_position",  lightPos);
-        defaultShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
-        glm::vec3 cam_pos = cam.get_pos();
-        defaultShader.set_vec3("vieuwPos", cam_pos);
 
         float objY = cos(2*glfwGetTime()) * 3.0f;
-        myModel.setPosition(0.0f, objY, 1.0f);
-        myModel.Draw(defaultShader);
+        myScene->models[0].setPosition(0.0f, objY, 1.0f);
+        myScene->draw();
 
-        lightShader.bind();
-        lightShader.set_mat4("view", view);
-        lightShader.set_mat4("projection", projection);
-        lightShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
-        lightObject.Draw(lightShader);
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -194,7 +130,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
-    projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-    glViewport(0, 0, width, height);
+    myScene->set_projection(width, height);
 }
 
