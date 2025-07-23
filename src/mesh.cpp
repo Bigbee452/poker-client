@@ -11,6 +11,14 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
     setupMesh();
 }
 
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat) : material(mat) {
+    this->vertices = vertices;
+    this->indices = indices;
+    this->textures = {};
+
+    setupMesh();    
+}
+
 void Mesh::setupMesh()
 {
     vbo = new vertex_buffer;
@@ -25,6 +33,11 @@ void Mesh::setupMesh()
 
 void Mesh::Draw(Shader &shader) 
 {
+
+    shader.set_vec3("material.ambient", material.ambient);
+    shader.set_vec3("material.diffuse", material.diffuse);
+    shader.set_vec3("material.specular", material.specular);
+    shader.set_float("material.shininess", 32.0f);
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for(unsigned int i = 0; i < textures.size(); i++)

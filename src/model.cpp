@@ -1,4 +1,5 @@
 #include "model.h"
+#include "assimp/material.h"
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
 #include <iostream>
@@ -89,6 +90,30 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         for(unsigned int j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);        
     }
+
+
+    if(mesh->mMaterialIndex >= 0)
+    {
+        Material mat = {glm::vec3(0.1f), glm::vec3(1.0f), glm::vec3(0.5f), 32.0f};
+        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        aiColor3D color(0.f, 0.f, 0.f);
+        material->Get(AI_MATKEY_COLOR_DIFFUSE, color); 
+        mat.diffuse.r = color.r;
+        mat.diffuse.g = color.g;
+        mat.diffuse.b = color.b;
+
+        material->Get(AI_MATKEY_COLOR_AMBIENT, color); 
+        mat.ambient.r = color.r;
+        mat.ambient.g = color.g;
+        mat.ambient.b = color.b;
+
+        material->Get(AI_MATKEY_COLOR_SPECULAR, color); 
+        mat.specular.r = color.r;
+        mat.specular.g = color.g;
+        mat.specular.b = color.b;
+
+        return Mesh(vertices, indices, mat);
+    } 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices);
 }

@@ -3,7 +3,6 @@
 #include <iostream>
 #include "main.h"
 #include "camera.h"
-#include "mesh.h"
 #include "shader.h"
 #include "camera.h"
 #include "model.h"
@@ -105,6 +104,7 @@ int main()
     }
 
     Model myModel(DEFAULT_MODEL_PATH);
+    Model lightObject(DEFAULT_LIGHT_MODEL);
 
     glm::vec3 cameraPos = glm::vec3(20.0f, 0.0f, 0.0f);  
 
@@ -113,7 +113,8 @@ int main()
 
     Camera cam(cameraPos, cameraDirection);
 
-    glm::vec3 lightPos(3.2f, 1.0f, 2.0f);
+    glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+    lightObject.setPosition(lightPos);
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -153,24 +154,21 @@ int main()
         defaultShader.bind();
         defaultShader.set_mat4("view", view);
         defaultShader.set_mat4("projection", projection);
-        defaultShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
+        defaultShader.set_vec3("light_position",  lightPos);
         defaultShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
+        glm::vec3 cam_pos = cam.get_pos();
+        defaultShader.set_vec3("vieuwPos", cam_pos);
 
         float objY = cos(2*glfwGetTime()) * 3.0f;
         myModel.setPosition(0.0f, objY, 1.0f);
         myModel.Draw(defaultShader);
 
-        glm::mat4 model = glm::mat4(1.0f);
         lightShader.bind();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); 
-        lightShader.set_mat4("model", model);
         lightShader.set_mat4("view", view);
         lightShader.set_mat4("projection", projection);
         lightShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
-
+        lightObject.Draw(lightShader);
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
