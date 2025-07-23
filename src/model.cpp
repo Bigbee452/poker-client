@@ -1,8 +1,23 @@
 #include "model.h"
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/fwd.hpp>
 #include <iostream>
+
+void Model::setPosition(glm::vec3 position){
+    this->position = position;
+}
+
+void Model::setPosition(float x, float y, float z){
+    setPosition(glm::vec3(x, y, z));
+}
 
 void Model::Draw(Shader &shader)
 {
+    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        
+    model = glm::translate(model, position);
+    // retrieve the matrix uniform locations
+    shader.set_mat4("model", model);
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
 } 
@@ -10,6 +25,8 @@ void Model::Draw(Shader &shader)
 
 void Model::loadModel(string path)
 {
+    position = glm::vec3(0.0f, 0.0f, 0.0f);
+
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);	
 	

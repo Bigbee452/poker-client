@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/fwd.hpp>
 #include <string>
 #include <vector>
 #include <assimp/Importer.hpp>
@@ -21,11 +22,15 @@ class Model
             loadModel(path);
         }
         void Draw(Shader &shader);	
+        void setPosition(glm::vec3 position);
+        void setPosition(float x, float y, float z);
     private:
         // model data
         vector<Mesh> meshes;
         vector<Texture> textures_loaded; 
         string directory;
+
+        glm::vec3 position;
 
         void loadModel(string path);
         void processNode(aiNode *node, const aiScene *scene);

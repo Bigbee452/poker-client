@@ -137,7 +137,7 @@ int main()
         const float radius = 10.0f;
         float camX = sin(glfwGetTime()) * radius;
         float camZ = cos(glfwGetTime()) * radius;
-        float camY = cos(2*glfwGetTime()) * radius;
+        float camY = 0.0f;
 
         glm::vec3 cameraPos = glm::vec3(camX, camY, camZ);  
 
@@ -151,19 +151,16 @@ int main()
 
         // draw our first triangle
         defaultShader.bind();
-        glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // retrieve the matrix uniform locations
-        defaultShader.set_mat4("model", model);
         defaultShader.set_mat4("view", view);
         defaultShader.set_mat4("projection", projection);
         defaultShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
         defaultShader.set_vec3("lightColor",  1.0f, 1.0f, 1.0f);
 
-
+        float objY = cos(2*glfwGetTime()) * 3.0f;
+        myModel.setPosition(0.0f, objY, 1.0f);
         myModel.Draw(defaultShader);
 
+        glm::mat4 model = glm::mat4(1.0f);
         lightShader.bind();
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
