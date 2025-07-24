@@ -1,13 +1,12 @@
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
 #include <iostream>
+#include <filesystem>
 #include "main.h"
 #include "camera.h"
-#include "shader.h"
 #include "camera.h"
 #include "model.h"
 #include "../include/stb_image.h"
-#include "utils.h"
 #include "scene.h"
 
 #include <glm/glm.hpp>
@@ -131,5 +130,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     myScene->set_projection(width, height);
+    glViewport(0, 0, width, height);
 }
 

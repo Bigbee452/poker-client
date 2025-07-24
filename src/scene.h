@@ -4,7 +4,6 @@
 #include <glm/fwd.hpp>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 #define DEFAULT_VERTEX_SHADER_PATH "/shaders/vert.glsl"
 #define DEFAULT_FRAGMENT_SHADER_PATH "/shaders/frag.glsl"
