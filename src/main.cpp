@@ -23,10 +23,15 @@ glm::mat4 projection    = glm::mat4(1.0f);
 
 Scene* myScene;
 
+std::string execute_path;
+
 int main(int argc, char* argv[])
 {
 
-    static std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
+    stbi_set_flip_vertically_on_load(true);
+
+    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
+    execute_path = exePath;
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -69,10 +74,8 @@ int main(int argc, char* argv[])
     glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
     myScene->light_pos = lightPos;
 
-    myScene->add_model(exePath/"models"/"model.fbx");
+    myScene->add_model(exePath/"models"/"model.obj");
     myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
-
-    stbi_set_flip_vertically_on_load(true);
 
     // render loop
     // -----------

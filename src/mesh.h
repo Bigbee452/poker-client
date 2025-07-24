@@ -7,8 +7,12 @@
 #include "indexBuffer.h"
 #include "shader.h"
 #include "vertexBuffer.h"
+#include "../include/stb_image.h"
 
 using namespace std;
+
+extern string execute_path;
+
 
 struct Texture {
     unsigned int id;
@@ -22,6 +26,8 @@ struct Material {
     glm::vec3 specular;
     float shininess;
 }; 
+
+unsigned int TextureFromFile(const char *path, const string &directory);
 
 class Mesh {
     public:

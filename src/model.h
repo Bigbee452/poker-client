@@ -5,14 +5,11 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "../include/stb_image.h"
 
 #include "shader.h"
 #include "mesh.h"
 
 using namespace std;
-
-unsigned int TextureFromFile(const char *path, const string &directory);
 
 class Model 
 {
