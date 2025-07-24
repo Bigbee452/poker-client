@@ -80,6 +80,16 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             vector.z = mesh->mNormals[i].z;
             vertex.Normal = vector;
         }
+
+        if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+        {
+            glm::vec2 vec;
+            vec.x = mesh->mTextureCoords[0][i].x; 
+            vec.y = mesh->mTextureCoords[0][i].y;
+            vertex.TexCoords = vec;
+        }
+        else
+            vertex.TexCoords = glm::vec2(0.0f, 0.0f); 
         vertices.push_back(vertex);
     }
     // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
@@ -112,7 +122,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         mat.specular.g = color.g;
         mat.specular.b = color.b;
 
-        return Mesh(vertices, indices, mat);
+        vector<Texture> diffuseMaps = loadMaterialTextures(material, 
+                                        aiTextureType_DIFFUSE, "texture_diffuse");
+        std::cout << diffuseMaps.size() << std::endl;
+        return Mesh(vertices, indices, mat, diffuseMaps);
     } 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices);

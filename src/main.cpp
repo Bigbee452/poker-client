@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
     glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
     myScene->light_pos = lightPos;
 
-    myScene->add_model(exePath/"models"/"model.obj");
+    myScene->add_model(exePath/"models"/"model.fbx");
     myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
 
     stbi_set_flip_vertically_on_load(true);

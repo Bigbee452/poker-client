@@ -1,6 +1,7 @@
 #include "mesh.h"
 #include "indexBuffer.h"
 #include "vertexBuffer.h"
+#include <vector>
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
 {
@@ -11,10 +12,10 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
     setupMesh();
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat) : material(mat) {
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat, vector<Texture> textures) : material(mat) {
     this->vertices = vertices;
     this->indices = indices;
-    this->textures = {};
+    this->textures = textures;
 
     setupMesh();    
 }

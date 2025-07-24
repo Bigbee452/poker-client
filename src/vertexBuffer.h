@@ -9,6 +9,8 @@ struct Vertex {
     glm::vec3 Position;
     // normal
     glm::vec3 Normal;
+    //texture coordinate
+    glm::vec2 TexCoords;
 };
 
 class vertex_buffer {

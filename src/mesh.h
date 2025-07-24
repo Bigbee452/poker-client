@@ -31,7 +31,7 @@ class Mesh {
         vector<Texture>      textures;
 
         Mesh(vector<Vertex> vertices, vector<unsigned int> indices);
-        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat);
+        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat, vector<Texture> textures);
         void Draw(Shader &shader);
     private:
         //  render data
