@@ -56,8 +56,9 @@ void Window::render_frame(){
     // ------
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    scene->draw();
+    if(scene != nullptr){
+        scene->draw();
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -68,7 +69,7 @@ bool Window::shouldStop(){
 }
 
 void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height){
-    if(scene != NULL){
+    if(scene != nullptr){
         scene->set_projection(width, height);
     }
     glViewport(0, 0, width, height);

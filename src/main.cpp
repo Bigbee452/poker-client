@@ -10,8 +10,6 @@ const unsigned int SCR_HEIGHT = 600;
 
 Scene* myScene;
 
-std::string execute_path;
-
 int main(int argc, char* argv[])
 {
 
@@ -19,7 +17,6 @@ int main(int argc, char* argv[])
     myWindow.init(SCR_WIDTH, SCR_HEIGHT);
 
     std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
-    execute_path = exePath;
 
     glm::vec3 cameraPos = glm::vec3(20.0f, 0.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -30,7 +27,7 @@ int main(int argc, char* argv[])
     myScene->cam->set_pos(cameraPos);
     myScene->cam->set_direction(cameraDirection);
 
-    glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+    glm::vec3 lightPos(10.2f, 1.0f, 10.0f);
     myScene->light_pos = lightPos;
 
     myScene->add_model(exePath/"models"/"deck.fbx");

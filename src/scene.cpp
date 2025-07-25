@@ -6,8 +6,11 @@
 #include "shader.h"
 #include "utils.h"
 
+std::string execute_path;
+
 Scene::Scene(std::string exePathString){
     exePath = exePathString;
+    execute_path = exePathString;
     glm::vec3 cam_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cam_dir = glm::vec3(1.0f, 0.0f, 0.0f);
     cam = new Camera(cam_pos, cam_dir);
