@@ -7,7 +7,7 @@
 #include "indexBuffer.h"
 #include "shader.h"
 #include "vertexBuffer.h"
-#include "../include/stb_image.h"
+#include "../../include/stb_image.h"
 
 using namespace std;
 

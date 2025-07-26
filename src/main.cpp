@@ -1,4 +1,4 @@
-#include "windowManager.h"
+#include "engine/windowManager.h"
 #include <filesystem>
 
 
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     glm::vec3 lightPos(10.2f, 1.0f, 10.0f);
     myScene->light_pos = lightPos;
 
-    myScene->add_model(exePath/"models"/"deck.fbx");
+    myScene->add_model(exePath/"models"/"table.fbx");
     myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
 
     // render loop

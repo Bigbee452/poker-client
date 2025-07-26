@@ -1,4 +1,17 @@
-add_executable(poker-client "main.cpp" "main.h" "vertexBuffer.cpp" "vertexBuffer.h" "indexBuffer.cpp" "indexBuffer.h" "utils.cpp" "utils.h" "shader.cpp" "shader.h" "camera.cpp" "camera.cpp" "mesh.cpp" "mesh.h" "model.cpp" "model.h" "../include/stb_image.cpp" "scene.cpp" "windowManager.cpp")
+set(ENGINE_SRC  "engine/camera.cpp"
+                "engine/indexBuffer.cpp"
+                "engine/mesh.cpp"
+                "engine/model.cpp"
+                "engine/scene.cpp"
+                "engine/shader.cpp"
+                "engine/utils.cpp"
+                "engine/vertexBuffer.cpp"
+                "engine/windowManager.cpp"
+                "engine/windowManager.h"
+                "../include/stb_image.h"
+                "../include/stb_image.cpp")
+
+add_executable(poker-client "main.cpp" "main.h" ${ENGINE_SRC})
 
 # Copy assets to the output directory
 add_custom_command(TARGET poker-client POST_BUILD
