@@ -1,3 +1,6 @@
 [submodule "external/assimp"]
 	path = external/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "external/BBengine"]
+	path = external/BBengine
+	url = https://github.com/Bigbee452/BBEngine.git

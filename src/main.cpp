@@ -1,5 +1,5 @@
-#include "windowManager.h"
 #include <filesystem>
+#include <windowManager.h>
 
 
 void processInput(GLFWwindow *window);
@@ -38,8 +38,8 @@ int main(int argc, char* argv[])
     while (!myWindow.shouldStop())
     {
         const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
+        float camX = sin(1) * radius;
+        float camZ = cos(1) * radius;
         float camY = 0.0f;
 
         glm::vec3 cameraPos = glm::vec3(camX, camY, camZ);  
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
 
 
-        float objY = cos(2*glfwGetTime()) * 3.0f;
+        float objY = cos(2*1) * 3.0f;
         myScene->models[0].setPosition(0.0f, objY, 1.0f);
 
         myWindow.render_frame();
