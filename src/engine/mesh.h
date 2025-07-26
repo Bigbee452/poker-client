@@ -25,6 +25,7 @@ struct Material {
     glm::vec3 diffuse;
     glm::vec3 specular;
     float shininess;
+    vector<Texture> textures;
 }; 
 
 unsigned int TextureFromFile(const char *path, const string &directory);
@@ -38,7 +39,7 @@ class Mesh {
         vector<Texture>      textures;
 
         Mesh(vector<Vertex> vertices, vector<unsigned int> indices);
-        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat, vector<Texture> textures);
+        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material& mat);
         void Draw(Shader &shader);
     private:
         //  render data

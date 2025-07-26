@@ -37,6 +37,11 @@ void Scene::add_model(std::string path, std::string name){
     models.push_back(model);
 }
 
+void Scene::add_model(std::string path, std::string name, Material* mat){
+    Model* model = new Model(path, name, mat);
+    models.push_back(model);
+}
+
 Model* Scene::get_model(std::string name){
     for(Model* model : models){
         if(model->name == name){

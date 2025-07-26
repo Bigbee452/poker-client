@@ -16,6 +16,18 @@ glm::vec3 Model::getPosition(){
     return position;
 }
 
+Model::Model(std::string path, std::string name)
+{
+    loadModel(path);
+    this->name = name;
+}
+Model::Model(std::string path, std::string name, Material* mat)
+{
+    this->name = name;
+    this->override_mat = mat;
+    loadModel(path);
+}
+
 void Model::Draw(Shader &shader)
 {
     glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -105,6 +117,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             indices.push_back(face.mIndices[j]);        
     }
 
+    if(override_mat != nullptr){
+        return Mesh(vertices, indices, *override_mat);
+    }
+
 
     if(mesh->mMaterialIndex >= 0)
     {
@@ -128,7 +144,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 
         vector<Texture> diffuseMaps = loadMaterialTextures(material, 
                                         aiTextureType_DIFFUSE, "texture_diffuse");
-        return Mesh(vertices, indices, mat, diffuseMaps);
+        mat.textures = diffuseMaps;
+        return Mesh(vertices, indices, mat);
     } 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices);

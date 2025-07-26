@@ -10,20 +10,19 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
     this->indices = indices;
 
     Texture texture;
-    string path = "textures/default_texture.png";
-    texture.id = TextureFromFile(path.c_str(), execute_path);
+    texture.id = GetWhiteTexture();
     texture.type = "texture_diffuse";
-    texture.path = path.c_str();
+    texture.path = "default/white_texture";
     this->textures = {texture};
 
     setupMesh();
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat, vector<Texture> textures) : material(mat) {
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material& mat) : material(mat) {
     this->vertices = vertices;
     this->indices = indices;
-    if(!textures.empty()){
-        this->textures = textures;
+    if(!mat.textures.empty()){
+        this->textures = mat.textures;
     } else {
         Texture texture;
         texture.id = GetWhiteTexture();

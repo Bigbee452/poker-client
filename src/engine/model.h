@@ -14,11 +14,8 @@ using namespace std;
 class Model 
 {
     public:
-        Model(string path, string name)
-        {
-            loadModel(path);
-            this->name = name;
-        }
+        Model(string path, string name);
+        Model(string path, string name, Material* mat);
         void Draw(Shader &shader);	
         void setPosition(glm::vec3 position);
         void setPosition(float x, float y, float z);
@@ -38,4 +35,6 @@ class Model
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
         vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, 
                                              string typeName);
+
+        Material* override_mat = nullptr;
 };

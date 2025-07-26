@@ -1,5 +1,7 @@
+#include "engine/mesh.h"
 #include "engine/windowManager.h"
 #include <filesystem>
+#include <glm/fwd.hpp>
 #include <iostream>
 
 
@@ -14,6 +16,18 @@ const unsigned int SCR_HEIGHT = 600;
 void buildScene(Scene* scene){
     scene->add_model("models/table.fbx", "table");
     scene->add_model("models/deck.fbx", "deck");
+    Material* mat = new Material;
+    mat->diffuse = glm::vec3(1.0f);
+    mat->specular = glm::vec3(1.0f);
+    mat->ambient = glm::vec3(1.0f);
+    mat->shininess = 32.0f;
+    Texture texture;
+    texture.id = TextureFromFile("textures/cards/2_of_clubs.png", execute_path);
+    texture.type = "texture_diffuse";
+    texture.path = "textures/cards/2_of_clubs.png/donotuse";
+    std::vector<Texture> textures = {texture};
+    mat->textures = textures;
+    scene->add_model("models/card.fbx", "card", mat);
     Model* table = scene->get_model("table");
     if(table != nullptr){
         glm::vec3 position = table->getPosition();
@@ -21,6 +35,13 @@ void buildScene(Scene* scene){
         table->setPosition(position);
     } else {
         std::cout << "didn't find object named table" << std::endl;
+    }
+
+    Model* card = scene->get_model("card");
+    if(card != nullptr){
+        glm::vec3 position = card->getPosition();
+        position.y += 0.3;
+        card->setPosition(position);
     }
 }
 
@@ -53,10 +74,10 @@ int main(int argc, char* argv[])
     // -----------
     while (!myWindow.shouldStop())
     {
-        const float radius = 10.0f;
+        const float radius = 2.0f;
         float lightX = sin(glfwGetTime()) * radius;
         float lightZ = cos(glfwGetTime()) * radius;
-        float lightY = 2.0f;
+        float lightY = 0.7f;
 
         lightPos = glm::vec3(lightX, lightY, lightZ);  
 

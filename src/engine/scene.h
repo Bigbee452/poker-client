@@ -20,6 +20,7 @@ class Scene {
         std::vector<Model*> models = {};
 
         void add_model(std::string path, std::string name);
+        void add_model(std::string path, std::string name, Material* mat);
         Model* get_model(std::string name);
         void draw();
 
