@@ -17,9 +17,10 @@ class Scene {
         glm::vec3 light_pos = glm::vec3(0.f, 0.f, 0.f);
         glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
         Camera* cam;
-        std::vector<Model> models = {};
+        std::vector<Model*> models = {};
 
-        void add_model(std::string path);
+        void add_model(std::string path, std::string name);
+        Model* get_model(std::string name);
         void draw();
 
         void set_projection(float width, float height);

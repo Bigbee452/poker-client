@@ -12,6 +12,10 @@ void Model::setPosition(float x, float y, float z){
     setPosition(glm::vec3(x, y, z));
 }
 
+glm::vec3 Model::getPosition(){
+    return position;
+}
+
 void Model::Draw(Shader &shader)
 {
     glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first

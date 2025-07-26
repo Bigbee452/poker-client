@@ -14,13 +14,17 @@ using namespace std;
 class Model 
 {
     public:
-        Model(std::string path)
+        Model(string path, string name)
         {
             loadModel(path);
+            this->name = name;
         }
         void Draw(Shader &shader);	
         void setPosition(glm::vec3 position);
         void setPosition(float x, float y, float z);
+        glm::vec3 getPosition();
+
+        string name;
     private:
         // model data
         vector<Mesh> meshes;

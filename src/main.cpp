@@ -1,5 +1,6 @@
 #include "engine/windowManager.h"
 #include <filesystem>
+#include <iostream>
 
 
 void processInput(GLFWwindow *window);
@@ -8,39 +9,54 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Scene* myScene;
+
+
+void buildScene(Scene* scene){
+    scene->add_model("models/table.fbx", "table");
+    scene->add_model("models/deck.fbx", "deck");
+    Model* table = scene->get_model("table");
+    if(table != nullptr){
+        glm::vec3 position = table->getPosition();
+        position.y -= 0.04f;
+        table->setPosition(position);
+    } else {
+        std::cout << "didn't find object named table" << std::endl;
+    }
+}
 
 int main(int argc, char* argv[])
 {
+    Scene* myScene;
 
     Window myWindow;
     myWindow.init(SCR_WIDTH, SCR_HEIGHT);
 
     std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
 
-    glm::vec3 cameraPos = glm::vec3(20.0f, 0.0f, 0.0f);  
+    glm::vec3 cameraPos = glm::vec3(3.0f, 1.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
     myScene = new Scene(exePath);
     myWindow.setScene(myScene);
+    myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
+
     myScene->cam->set_pos(cameraPos);
     myScene->cam->set_direction(cameraDirection);
 
     glm::vec3 lightPos(10.2f, 1.0f, 10.0f);
     myScene->light_pos = lightPos;
 
-    myScene->add_model(exePath/"models"/"table.fbx");
-    myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
+    buildScene(myScene);
 
     // render loop
     // -----------
     while (!myWindow.shouldStop())
     {
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
-        float camY = 0.0f;
+        const float radius = 3.0f;
+        float camX = sin(glfwGetTime()*0.3f) * radius;
+        float camZ = cos(glfwGetTime()*0.3f) * radius;
+        float camY = myScene->cam->get_pos().y;
 
         glm::vec3 cameraPos = glm::vec3(camX, camY, camZ);  
 
@@ -49,11 +65,6 @@ int main(int argc, char* argv[])
 
         myScene->cam->set_pos(cameraPos);
         myScene->cam->set_direction(cameraDirection);
-
-
-
-        float objY = cos(2*glfwGetTime()) * 3.0f;
-        myScene->models[0].setPosition(0.0f, objY, 1.0f);
 
         myWindow.render_frame();
     }

@@ -4,7 +4,6 @@
 #include <string>
 #include "model.h"
 #include "shader.h"
-#include "utils.h"
 
 std::string execute_path;
 
@@ -16,7 +15,7 @@ Scene::Scene(std::string exePathString){
     cam = new Camera(cam_pos, cam_dir);
 
     projection = glm::perspective(glm::radians(45.0f), (float)100 / (float)100, 0.1f, 100.0f);
-    light = new Model(exePath+DEFAULT_LIGHT_MODEL);
+    light = new Model(exePath+DEFAULT_LIGHT_MODEL, "light");
 
     defaultShader = new Shader(exePath+DEFAULT_VERTEX_SHADER_PATH, exePath+DEFAULT_FRAGMENT_SHADER_PATH);
     lightShader = new Shader(exePath+DEFAULT_VERTEX_SHADER_PATH, exePath+DEFAULT_LIGHT_FRAGMENT_SHADER_PATH);
@@ -27,11 +26,24 @@ Scene::~Scene(){
     delete light;
     delete defaultShader;
     delete lightShader;
+
+    for(Model* model : models){
+        delete model;
+    }
 }
 
-void Scene::add_model(std::string path){
-    Model model(path);
+void Scene::add_model(std::string path, std::string name){
+    Model* model = new Model(path, name);
     models.push_back(model);
+}
+
+Model* Scene::get_model(std::string name){
+    for(Model* model : models){
+        if(model->name == name){
+            return model;
+        }
+    }
+    return nullptr;
 }
 
 void Scene::draw(){
@@ -52,8 +64,8 @@ void Scene::draw(){
     glm::vec3 cam_pos = cam->get_pos();
     defaultShader->set_vec3("viewPos", cam_pos);
 
-    for(Model model : models){
-        model.Draw(*defaultShader);
+    for(Model* model : models){
+        model->Draw(*defaultShader);
     }
 }
 
