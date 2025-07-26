@@ -28,6 +28,7 @@ struct Material {
 }; 
 
 unsigned int TextureFromFile(const char *path, const string &directory);
+unsigned int GetWhiteTexture();
 
 class Mesh {
     public:

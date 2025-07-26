@@ -53,18 +53,14 @@ int main(int argc, char* argv[])
     // -----------
     while (!myWindow.shouldStop())
     {
-        const float radius = 3.0f;
-        float camX = sin(glfwGetTime()*0.3f) * radius;
-        float camZ = cos(glfwGetTime()*0.3f) * radius;
-        float camY = myScene->cam->get_pos().y;
+        const float radius = 10.0f;
+        float lightX = sin(glfwGetTime()) * radius;
+        float lightZ = cos(glfwGetTime()) * radius;
+        float lightY = 2.0f;
 
-        glm::vec3 cameraPos = glm::vec3(camX, camY, camZ);  
+        lightPos = glm::vec3(lightX, lightY, lightZ);  
 
-        glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-        myScene->cam->set_pos(cameraPos);
-        myScene->cam->set_direction(cameraDirection);
+        myScene->light_pos = lightPos;
 
         myWindow.render_frame();
     }

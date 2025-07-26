@@ -26,10 +26,9 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material mat, 
         this->textures = textures;
     } else {
         Texture texture;
-        string path = "textures/default_texture.png";
-        texture.id = TextureFromFile(path.c_str(), execute_path);
+        texture.id = GetWhiteTexture();
         texture.type = "texture_diffuse";
-        texture.path = path.c_str();
+        texture.path = "default/white_texture";
         this->textures = {texture};        
     }
 
@@ -117,5 +116,27 @@ unsigned int TextureFromFile(const char *path, const string &directory)
         stbi_image_free(data);
     }
 
+    return textureID;
+}
+
+unsigned int GetWhiteTexture(){
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    unsigned char* data = new unsigned char[3];
+    data[0] = 255;
+    data[1] = 255;
+    data[2] = 255;    
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    delete[] data;
     return textureID;
 }
