@@ -19,6 +19,8 @@ class Model
         void Draw(Shader &shader);	
         void setPosition(glm::vec3 position);
         void setPosition(float x, float y, float z);
+        void setRotation(glm::vec3 rotation);
+        void setRotation(float x, float y, float z);
         glm::vec3 getPosition();
 
         string name;
@@ -29,6 +31,7 @@ class Model
         string directory;
 
         glm::vec3 position;
+        glm::vec3 rotation;
 
         void loadModel(string path);
         void processNode(aiNode *node, const aiScene *scene);

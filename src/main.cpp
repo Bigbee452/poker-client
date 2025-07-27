@@ -1,4 +1,3 @@
-#include "engine/mesh.h"
 #include "engine/windowManager.h"
 #include <filesystem>
 #include <glm/fwd.hpp>
@@ -12,36 +11,17 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 
-
 void buildScene(Scene* scene){
-    scene->add_model("models/table.fbx", "table");
+    scene->add_model("models/tables.fbx", "table");
     scene->add_model("models/deck.fbx", "deck");
-    Material* mat = new Material;
-    mat->diffuse = glm::vec3(1.0f);
-    mat->specular = glm::vec3(1.0f);
-    mat->ambient = glm::vec3(1.0f);
-    mat->shininess = 32.0f;
-    Texture texture;
-    texture.id = TextureFromFile("textures/cards/2_of_clubs.png", execute_path);
-    texture.type = "texture_diffuse";
-    texture.path = "textures/cards/2_of_clubs.png/donotuse";
-    std::vector<Texture> textures = {texture};
-    mat->textures = textures;
-    scene->add_model("models/card.fbx", "card", mat);
     Model* table = scene->get_model("table");
-    if(table != nullptr){
+    if(table == nullptr){
         glm::vec3 position = table->getPosition();
         position.y -= 0.04f;
         table->setPosition(position);
+        table->setRotation(0.0f, 0.0f, 0.0f);
     } else {
         std::cout << "didn't find object named table" << std::endl;
-    }
-
-    Model* card = scene->get_model("card");
-    if(card != nullptr){
-        glm::vec3 position = card->getPosition();
-        position.y += 0.3;
-        card->setPosition(position);
     }
 }
 

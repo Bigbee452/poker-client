@@ -12,6 +12,14 @@ void Model::setPosition(float x, float y, float z){
     setPosition(glm::vec3(x, y, z));
 }
 
+void Model::setRotation(glm::vec3 rotation){
+    this->rotation = rotation;
+}
+
+void Model::setRotation(float x, float y, float z){
+    setRotation(glm::vec3(x, y, z));
+}
+
 glm::vec3 Model::getPosition(){
     return position;
 }
@@ -33,6 +41,9 @@ void Model::Draw(Shader &shader)
     glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         
     model = glm::translate(model, position);
+    model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
     // retrieve the matrix uniform locations
     shader.set_mat4("model", model);
     for(unsigned int i = 0; i < meshes.size(); i++)
@@ -43,6 +54,7 @@ void Model::Draw(Shader &shader)
 void Model::loadModel(string path)
 {
     position = glm::vec3(0.0f, 0.0f, 0.0f);
+    rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);	
