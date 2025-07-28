@@ -36,14 +36,19 @@ Model::Model(std::string path, std::string name, Material* mat)
     loadModel(path);
 }
 
+void Model::setPreTransform(glm::mat4 transform){
+    pre_transform = transform;
+}
+
 void Model::Draw(Shader &shader)
 {
-    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        
+    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first 
+
     model = glm::translate(model, position);
     model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = pre_transform*model;
     // retrieve the matrix uniform locations
     shader.set_mat4("model", model);
     for(unsigned int i = 0; i < meshes.size(); i++)

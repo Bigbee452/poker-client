@@ -1,4 +1,6 @@
 #include "engine/windowManager.h"
+#include "cards.h"
+#include <GLFW/glfw3.h>
 #include <filesystem>
 #include <glm/fwd.hpp>
 #include <iostream>
@@ -12,10 +14,11 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 void buildScene(Scene* scene){
-    scene->add_model("models/tables.fbx", "table");
+    /*
+    scene->add_model("models/table.fbx", "table");
     scene->add_model("models/deck.fbx", "deck");
     Model* table = scene->get_model("table");
-    if(table == nullptr){
+    if(table){
         glm::vec3 position = table->getPosition();
         position.y -= 0.04f;
         table->setPosition(position);
@@ -23,6 +26,7 @@ void buildScene(Scene* scene){
     } else {
         std::cout << "didn't find object named table" << std::endl;
     }
+    */
 }
 
 int main(int argc, char* argv[])
@@ -50,6 +54,9 @@ int main(int argc, char* argv[])
 
     buildScene(myScene);
 
+    CardModel myModel(myScene);
+    myModel.setPosition(1.0, 0.0, 0.0);
+
     // render loop
     // -----------
     while (!myWindow.shouldStop())
@@ -62,6 +69,9 @@ int main(int argc, char* argv[])
         lightPos = glm::vec3(lightX, lightY, lightZ);  
 
         myScene->light_pos = lightPos;
+
+
+        myModel.setRotation(glm::pi<float>()/2, 0, glfwGetTime());
 
         myWindow.render_frame();
     }

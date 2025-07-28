@@ -41,6 +41,7 @@ bool Window::init(int width, int height){
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);  
+    glEnable(GL_CULL_FACE);  
     stbi_set_flip_vertically_on_load(true);
     return true;
 }

@@ -21,6 +21,8 @@ class Model
         void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 rotation);
         void setRotation(float x, float y, float z);
+
+        void setPreTransform(glm::mat4 transform);
         glm::vec3 getPosition();
 
         string name;
@@ -40,4 +42,6 @@ class Model
                                              string typeName);
 
         Material* override_mat = nullptr;
+
+        glm::mat4 pre_transform = glm::mat4(1.0f);
 };
