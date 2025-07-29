@@ -11,7 +11,7 @@ set(ENGINE_SRC  "engine/camera.cpp"
                 "../include/stb_image.h"
                 "../include/stb_image.cpp")
 
-add_executable(poker-client "main.cpp" "main.h" "cards.cpp" ${ENGINE_SRC})
+add_executable(poker-client "main.cpp" "main.h" "cards.cpp" "network.h" "network.cpp" ${ENGINE_SRC})
 
 # Copy assets to the output directory
 add_custom_command(TARGET poker-client POST_BUILD

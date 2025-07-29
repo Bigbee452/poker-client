@@ -14,7 +14,6 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 void buildScene(Scene* scene){
-    /*
     scene->add_model("models/table.fbx", "table");
     scene->add_model("models/deck.fbx", "deck");
     Model* table = scene->get_model("table");
@@ -26,7 +25,6 @@ void buildScene(Scene* scene){
     } else {
         std::cout << "didn't find object named table" << std::endl;
     }
-    */
 }
 
 int main(int argc, char* argv[])
@@ -55,7 +53,7 @@ int main(int argc, char* argv[])
     buildScene(myScene);
 
     CardModel myModel(myScene);
-    myModel.setPosition(1.0, 0.0, 0.0);
+    myModel.setPosition(0.0, 0.5, 0.0);
 
     // render loop
     // -----------
@@ -71,6 +69,7 @@ int main(int argc, char* argv[])
         myScene->light_pos = lightPos;
 
 
+        myModel.setPosition(0.0f, 0.5+0.1*sin(2*glfwGetTime()), 0.0f);
         myModel.setRotation(glm::pi<float>()/2, 0, glfwGetTime());
 
         myWindow.render_frame();
