@@ -30,7 +30,12 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_subdirectory(external/glm)
+
+set(RMLUI_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(RMLUI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+add_subdirectory(external/RmlUi)
+
 add_subdirectory(src)
 target_include_directories(poker-client PRIVATE include)
 
-target_link_libraries(poker-client PRIVATE glad glfw assimp SFML::Network)
+target_link_libraries(poker-client PRIVATE glad glfw assimp SFML::Network RmlUi::Core)
