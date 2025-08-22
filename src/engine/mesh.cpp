@@ -1,7 +1,9 @@
 #include "mesh.h"
 #include "indexBuffer.h"
 #include "vertexBuffer.h"
+#include <glm/fwd.hpp>
 #include <iostream>
+#include <string>
 #include <vector>
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
@@ -10,7 +12,6 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
     this->indices = indices;
 
     Texture texture;
-    texture.id = GetWhiteTexture();
     texture.type = "texture_diffuse";
     texture.path = "default/white_texture";
     this->textures = {texture};
@@ -25,7 +26,6 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material& mat)
         this->textures = mat.textures;
     } else {
         Texture texture;
-        texture.id = GetWhiteTexture();
         texture.type = "texture_diffuse";
         texture.path = "default/white_texture";
         this->textures = {texture};        
@@ -45,31 +45,35 @@ void Mesh::setupMesh()
     ebo->bind();
 } 
 
+void Mesh::Draw(Shader &shader){
+    Draw(shader, true);
+}
 
-void Mesh::Draw(Shader &shader) 
+void Mesh::Draw(Shader &shader, bool enableTextures) 
 {
-
     shader.set_vec3("material.ambient", material.ambient);
     shader.set_vec3("material.diffuse", material.diffuse);
     shader.set_vec3("material.specular", material.specular);
     shader.set_float("material.shininess", 32.0f);
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
-    for(unsigned int i = 0; i < textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-        // retrieve texture number (the N in diffuse_textureN)
-        string number;
-        string name = textures[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
-            number = std::to_string(specularNr++);
+    if(enableTextures){
+        for(unsigned int i = 0; i < textures.size(); i++)
+        {
+            glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            string number;
+            string name = textures[i].type;
+            if(name == "texture_diffuse")
+                number = std::to_string(diffuseNr++);
+            else if(name == "texture_specular")
+                number = std::to_string(specularNr++);
 
-        shader.set_int(("material." + name + number).c_str(), i);
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+            shader.set_int(("material." + name + number).c_str(), i);
+            glBindTexture(GL_TEXTURE_2D, textures[i].id);
+        }
+        glActiveTexture(GL_TEXTURE0);
     }
-    glActiveTexture(GL_TEXTURE0);
 
     // draw mesh
     vbo->bind();
@@ -78,16 +82,13 @@ void Mesh::Draw(Shader &shader)
     glBindVertexArray(0);
 } 
 
-unsigned int TextureFromFile(const char *path, const string &directory)
+void Texture::TextureFromFile(const string& path)
 {
-    string filename = string(path);
-    filename = directory + '/' + filename;
-
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
-    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+    unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
         GLenum format;
@@ -115,10 +116,11 @@ unsigned int TextureFromFile(const char *path, const string &directory)
         stbi_image_free(data);
     }
 
-    return textureID;
+    id = textureID;
+    size = glm::vec2(width, height);
 }
 
-unsigned int GetWhiteTexture(){
+void Texture::SetWhiteTexture(){
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -137,5 +139,34 @@ unsigned int GetWhiteTexture(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     delete[] data;
-    return textureID;
+    id = textureID;
+    size = glm::vec2(1, 1);
+}
+
+Texture::Texture(){
+    SetWhiteTexture();
+}
+
+Texture::Texture(const string& path, string type){
+    TextureFromFile(path);
+    this->type = type;
+    this->path = path;
+}
+
+Texture::Texture(unsigned char* source, glm::vec2 size){
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, source);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    delete[] source;
+    id = textureID;
+    this->size = size;
 }

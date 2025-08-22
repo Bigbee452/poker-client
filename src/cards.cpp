@@ -39,13 +39,11 @@ CardModel::CardModel(Scene* scene){
     front_mat->specular = glm::vec3(1.0f);
     front_mat->shininess = 32.0f;
 
-    Texture front_texture;
-    std::string texturePath = "textures/cards/";
+    
+    std::string texturePath = "/textures/cards/";
     texturePath += "card";
     texturePath += std::to_string(card_id) + ".png";
-    front_texture.id = TextureFromFile(texturePath.c_str(), execute_path);
-    front_texture.path = texturePath;
-    front_texture.type = "texture_diffuse";
+    Texture front_texture(execute_path+texturePath, "texture_diffuse");
     std::vector<Texture> textures = {front_texture};
     front_mat->textures = textures;
 
@@ -60,11 +58,9 @@ CardModel::CardModel(Scene* scene){
     back_mat->specular = glm::vec3(1.0f);
     back_mat->shininess = 32.0f;
 
-    Texture back_texture;
-    texturePath = "textures/cards/back.png";
-    back_texture.id = TextureFromFile(texturePath.c_str(), execute_path);
-    back_texture.path = texturePath;
-    back_texture.type = "texture_diffuse";
+    
+    texturePath = "/textures/cards/back.png";
+    Texture back_texture(execute_path+texturePath, "texture_diffuse");
     std::vector<Texture> back_textures = {back_texture};
     back_mat->textures = back_textures;
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <vector>
 #include <string>
@@ -14,10 +15,18 @@ using namespace std;
 extern string execute_path;
 
 
-struct Texture {
+class Texture {
+public:
     unsigned int id;
     string type;
     string path;
+    glm::vec2 size;
+    Texture();
+    Texture(const string& path, string type);
+    Texture(unsigned char* source, glm::vec2 size);
+private:
+    void TextureFromFile(const string& path);
+    void SetWhiteTexture();
 };  
 
 struct Material {
@@ -27,9 +36,6 @@ struct Material {
     float shininess;
     vector<Texture> textures;
 }; 
-
-unsigned int TextureFromFile(const char *path, const string &directory);
-unsigned int GetWhiteTexture();
 
 class Mesh {
     public:
@@ -41,6 +47,7 @@ class Mesh {
         Mesh(vector<Vertex> vertices, vector<unsigned int> indices);
         Mesh(vector<Vertex> vertices, vector<unsigned int> indices, Material& mat);
         void Draw(Shader &shader);
+        void Draw(Shader &shader, bool enableTextures);
     private:
         //  render data
         vertex_buffer* vbo;

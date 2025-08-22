@@ -11,6 +11,8 @@ struct Vertex {
     glm::vec3 Normal;
     //texture coordinate
     glm::vec2 TexCoords;
+    //color
+    glm::vec4 Color = glm::vec4(1, 1, 1, 1);
 };
 
 class vertex_buffer {
