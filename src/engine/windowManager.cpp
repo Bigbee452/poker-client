@@ -45,6 +45,9 @@ bool Window::init(int width, int height){
     glEnable(GL_CULL_FACE);  
     glFrontFace(GL_CW);
     stbi_set_flip_vertically_on_load(true);
+
+    gui = new Gui;
+    gui->init(width, height);
     return true;
 }
 

@@ -8,6 +8,7 @@ set(ENGINE_SRC  "engine/camera.cpp"
                 "engine/vertexBuffer.cpp"
                 "engine/windowManager.cpp"
                 "engine/windowManager.h"
+                "engine/gui.cpp"
                 "../include/stb_image.h"
                 "../include/stb_image.cpp")
 
