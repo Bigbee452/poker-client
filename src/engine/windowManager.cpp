@@ -68,6 +68,8 @@ void Window::render_frame(){
         scene->draw();
     }
 
+    gui->render();
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

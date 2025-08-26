@@ -51,6 +51,7 @@ void Mesh::Draw(Shader &shader){
 
 void Mesh::Draw(Shader &shader, bool enableTextures) 
 {
+    shader.bind();
     shader.set_vec3("material.ambient", material.ambient);
     shader.set_vec3("material.diffuse", material.diffuse);
     shader.set_vec3("material.specular", material.specular);

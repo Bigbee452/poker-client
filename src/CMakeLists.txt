@@ -32,3 +32,15 @@ add_custom_command(TARGET poker-client POST_BUILD
         ${CMAKE_SOURCE_DIR}/textures
         $<TARGET_FILE_DIR:poker-client>/textures
 )
+
+add_custom_command(TARGET poker-client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/fonts
+        $<TARGET_FILE_DIR:poker-client>/fonts
+)
+
+add_custom_command(TARGET poker-client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/ui
+        $<TARGET_FILE_DIR:poker-client>/ui
+)

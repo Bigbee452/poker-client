@@ -9,12 +9,12 @@ out vec2 TexCoord;
 out vec4 Color;
 
 uniform mat4 translate;
+uniform mat4 projection;
 
 void main()
 {
-    gl_Position = translate * vec4(aPos, 1.0);
+    gl_Position = projection*translate*vec4(aPos, 1.0);
     FragPos = (translate * vec4(aPos, 1.0)).xyz;
-    Normal = mat3(transpose(inverse(model))) * aNormal;
     TexCoord = aTexCoord;  
     Color = aColor;
 } 

@@ -32,11 +32,14 @@ class OpenGLRenderInterface : public Rml::RenderInterface
 class Gui {
 public:
     void init(int width, int height);
-
+    void render();
 private:
     // Instantiate the interfaces to RmlUi.
 	OpenGLRenderInterface render_interface;
 	Rml::SystemInterface system_interface;
 
     Rml::Context* context;
+
+    int width;
+    int height;
 };

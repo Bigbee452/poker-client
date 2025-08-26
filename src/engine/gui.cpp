@@ -1,6 +1,7 @@
 #include "gui.h"
 
 
+#include <glm/ext/matrix_clip_space.hpp>
 #include <iostream>
 #include <vector>
 #include "RmlUi/Core/Core.h"
@@ -41,15 +42,20 @@ Rml::CompiledGeometryHandle OpenGLRenderInterface::CompileGeometry(Rml::Span<con
 void OpenGLRenderInterface::RenderGeometry(Rml::CompiledGeometryHandle geometry, Rml::Vector2f translation, Rml::TextureHandle texture) {
     if(guiShader == nullptr){
         guiShader = new Shader(execute_path+GUI_VERTEX_SHADER_PATH, execute_path+GUI_FRAGMENT_SHADER_PATH);
-        std::cout << "compiling gui shader" << std::endl;
+        std::cout << "compiled gui shader" << std::endl;
     }
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, glm::vec3(translation.x, translation.y, 0));
+    guiShader->bind();
     guiShader->set_mat4("translate", transform);
+    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f); //TODO: dynamicly set window size
+    guiShader->set_mat4("projection", projection);
     Mesh* mesh = reinterpret_cast<Mesh*>(geometry);
-    glActiveTexture(GL_TEXTURE0);
-    Texture* drawTexture = reinterpret_cast<Texture*>(texture);
-    glBindTexture(GL_TEXTURE_2D, drawTexture->id);
+    if(texture != 0){
+        glActiveTexture(GL_TEXTURE0);
+        Texture* drawTexture = reinterpret_cast<Texture*>(texture);
+        glBindTexture(GL_TEXTURE_2D, drawTexture->id);
+    }
     mesh->Draw(*guiShader, false);
 }
 
@@ -62,6 +68,7 @@ Rml::TextureHandle OpenGLRenderInterface::LoadTexture(Rml::Vector2i& texture_dim
     Texture* texture = new Texture(source, "texture_gui");
     texture_dimensions.x = texture->size.x;
     texture_dimensions.y = texture->size.y;
+    std::cout << "load texture" << std::endl;
     Rml::TextureHandle handle = reinterpret_cast<Rml::TextureHandle>(texture);
     return handle;
 }
@@ -93,6 +100,11 @@ void OpenGLRenderInterface::SetScissorRegion(Rml::Rectanglei region) {
     glScissor(region.BottomLeft().x, region.BottomLeft().y, region.Width(), region.Height());
 }
 
+struct ApplicationData {
+    bool show_text = true;
+    Rml::String animal = "dog";
+} my_data;
+
 void Gui::init(int width, int height){
 	// Begin by installing the custom interfaces.
 	Rml::SetRenderInterface(&render_interface);
@@ -107,5 +119,40 @@ void Gui::init(int width, int height){
         std::cerr << "failed to create Rml context" << std::endl;
 	}
 
-    Rml::LoadFontFace(execute_path + "fonts/old_font.ttf");    
+    struct FontFace {
+		const char* filename;
+		bool fallback_face;
+	};
+
+	FontFace font_faces[] = {
+		{"LatoLatin-Regular.ttf", false},
+		{"LatoLatin-Italic.ttf", false},
+		{"LatoLatin-Bold.ttf", false},
+		{"LatoLatin-BoldItalic.ttf", false},
+		{"NotoEmoji-Regular.ttf", true},
+	};
+
+    for (const FontFace& face : font_faces){
+        Rml::LoadFontFace(execute_path + "/fonts/" + face.filename, face.fallback_face);
+    }    
+
+    if (Rml::DataModelConstructor constructor = context->CreateDataModel("animals"))
+    {
+        constructor.Bind("show_text", &my_data.show_text);
+        constructor.Bind("animal", &my_data.animal);
+    }
+
+    Rml::ElementDocument* document = context->LoadDocument(execute_path + "/ui/ip.rml");
+	if (!document)
+	{
+		Rml::Shutdown();
+	}
+
+    document->Show();
+
+}
+
+void Gui::render(){
+    context->Update();
+    context->Render();
 }

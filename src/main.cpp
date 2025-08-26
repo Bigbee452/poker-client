@@ -1,3 +1,4 @@
+#include "engine/mesh.h"
 #include "engine/windowManager.h"
 #include "cards.h"
 #include <GLFW/glfw3.h>
@@ -31,10 +32,11 @@ int main(int argc, char* argv[])
 {
     Scene* myScene;
 
+    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
+    execute_path = exePath;
+
     Window myWindow;
     myWindow.init(SCR_WIDTH, SCR_HEIGHT);
-
-    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
 
     glm::vec3 cameraPos = glm::vec3(3.0f, 1.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
