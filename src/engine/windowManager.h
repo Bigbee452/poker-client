@@ -15,7 +15,7 @@ public:
     bool shouldStop();
 private:
     GLFWwindow* window;
-    Gui* gui;
+    static inline Gui* gui;
     static inline Scene* scene;
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void processInput(GLFWwindow *window);

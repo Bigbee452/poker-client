@@ -39,6 +39,7 @@ class Gui {
 public:
     void init(int width, int height);
     void render();
+    void changeContextDimensions(int width, int height);
 private:
     // Instantiate the interfaces to RmlUi.
 	OpenGLRenderInterface render_interface;

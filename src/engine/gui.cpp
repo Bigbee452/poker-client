@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "RmlUi/Core/Core.h"
+#include "RmlUi/Core/Math.h"
 #include "mesh.h"
 #include "vertexBuffer.h"
 
@@ -46,12 +47,21 @@ Rml::CompiledGeometryHandle OpenGLRenderInterface::CompileGeometry(Rml::Span<con
 }
 
 void OpenGLRenderInterface::RenderGeometry(Rml::CompiledGeometryHandle geometry, Rml::Vector2f translation, Rml::TextureHandle texture) {
+    //set transform of gui
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, glm::vec3(translation.x, translation.y, 0));
     guiShader->bind();
     guiShader->set_mat4("translate", transform);
-    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f); //TODO: dynamicly set window size
+
+    //set the projection
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    float vp_width = static_cast<float>(viewport[2]);
+    float vp_height = static_cast<float>(viewport[3]);
+    glm::mat4 projection = glm::ortho(0.0f, vp_width, 0.0f, vp_height);
     guiShader->set_mat4("projection", projection);
+
+    //get mesh to render
     Mesh* mesh = reinterpret_cast<Mesh*>(geometry);
     glActiveTexture(GL_TEXTURE0);
     Texture* drawTexture; 
@@ -108,7 +118,10 @@ void OpenGLRenderInterface::EnableScissorRegion(bool enable) {
 }    
 
 void OpenGLRenderInterface::SetScissorRegion(Rml::Rectanglei region) {
-    glScissor(region.BottomLeft().x, 600-region.BottomLeft().y, region.Width(), region.Height());
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    float vp_height = static_cast<float>(viewport[3]);
+    glScissor(region.BottomLeft().x, vp_height-region.BottomLeft().y, region.Width(), region.Height());
 }
 
 struct ApplicationData {
@@ -166,4 +179,8 @@ void Gui::init(int width, int height){
 void Gui::render(){
     context->Update();
     context->Render();
+}
+
+void Gui::changeContextDimensions(int width, int height){
+    context->SetDimensions(Rml::Vector2i(width, height));
 }

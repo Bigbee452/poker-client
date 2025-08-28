@@ -10,6 +10,5 @@ uniform sampler2D guiTexture;
 
 void main(){
     vec4 color = Color/255;
-    color.a = 1.0;
     FragColor = texture(guiTexture, TexCoord)*color;
 }
