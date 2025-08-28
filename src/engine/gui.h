@@ -3,6 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
 
+#include "mesh.h"
 #include "shader.h"
 
 #define GUI_VERTEX_SHADER_PATH "/shaders/gui_vert.glsl"
@@ -27,6 +28,11 @@ class OpenGLRenderInterface : public Rml::RenderInterface
     void EnableScissorRegion(bool enable) override;    
 
     virtual void SetScissorRegion(Rml::Rectanglei region) override;
+ 
+    Texture* white_texture;
+
+public:
+    OpenGLRenderInterface();
 };
 
 class Gui {

@@ -6,6 +6,10 @@ in vec3 Normal;
 in vec2 TexCoord;
 in vec4 Color;
 
+uniform sampler2D guiTexture;
+
 void main(){
-    FragColor = Color;
+    vec4 color = Color/255;
+    color.a = 1.0;
+    FragColor = texture(guiTexture, TexCoord)*color;
 }

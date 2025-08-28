@@ -8,6 +8,12 @@
 #include "mesh.h"
 #include "vertexBuffer.h"
 
+OpenGLRenderInterface::OpenGLRenderInterface(){
+    white_texture = new Texture;
+    guiShader = new Shader(execute_path+GUI_VERTEX_SHADER_PATH, execute_path+GUI_FRAGMENT_SHADER_PATH);
+    std::cout << "compiled gui shader" << std::endl;
+}
+
 Rml::CompiledGeometryHandle OpenGLRenderInterface::CompileGeometry(Rml::Span<const Rml::Vertex> vertices, Rml::Span<const int> indices) {
     std::vector<Vertex> new_vertices;
     for(Rml::Vertex vertex : vertices){
@@ -40,10 +46,6 @@ Rml::CompiledGeometryHandle OpenGLRenderInterface::CompileGeometry(Rml::Span<con
 }
 
 void OpenGLRenderInterface::RenderGeometry(Rml::CompiledGeometryHandle geometry, Rml::Vector2f translation, Rml::TextureHandle texture) {
-    if(guiShader == nullptr){
-        guiShader = new Shader(execute_path+GUI_VERTEX_SHADER_PATH, execute_path+GUI_FRAGMENT_SHADER_PATH);
-        std::cout << "compiled gui shader" << std::endl;
-    }
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, glm::vec3(translation.x, translation.y, 0));
     guiShader->bind();
@@ -51,12 +53,21 @@ void OpenGLRenderInterface::RenderGeometry(Rml::CompiledGeometryHandle geometry,
     glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f); //TODO: dynamicly set window size
     guiShader->set_mat4("projection", projection);
     Mesh* mesh = reinterpret_cast<Mesh*>(geometry);
-    if(texture != 0){
-        glActiveTexture(GL_TEXTURE0);
-        Texture* drawTexture = reinterpret_cast<Texture*>(texture);
-        glBindTexture(GL_TEXTURE_2D, drawTexture->id);
+    glActiveTexture(GL_TEXTURE0);
+    Texture* drawTexture; 
+    if(texture != 0){   
+        drawTexture = reinterpret_cast<Texture*>(texture);
+    } else {
+        drawTexture = white_texture;
     }
+    glBindTexture(GL_TEXTURE_2D, drawTexture->id);
+    guiShader->set_int("guiTexture", 0);
+
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
     mesh->Draw(*guiShader, false);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void OpenGLRenderInterface::ReleaseGeometry(Rml::CompiledGeometryHandle geometry) {
@@ -97,7 +108,7 @@ void OpenGLRenderInterface::EnableScissorRegion(bool enable) {
 }    
 
 void OpenGLRenderInterface::SetScissorRegion(Rml::Rectanglei region) {
-    glScissor(region.BottomLeft().x, region.BottomLeft().y, region.Width(), region.Height());
+    glScissor(region.BottomLeft().x, 600-region.BottomLeft().y, region.Width(), region.Height());
 }
 
 struct ApplicationData {

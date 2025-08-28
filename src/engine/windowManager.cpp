@@ -44,6 +44,10 @@ bool Window::init(int width, int height){
     glEnable(GL_MULTISAMPLE);  
     glEnable(GL_CULL_FACE);  
     glFrontFace(GL_CW);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
     stbi_set_flip_vertically_on_load(true);
 
     gui = new Gui;
