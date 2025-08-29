@@ -4,6 +4,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <iostream>
 #include <vector>
+#include "RmlUi/Core/Context.h"
 #include "RmlUi/Core/Core.h"
 #include "RmlUi/Core/Input.h"
 #include "RmlUi/Core/Math.h"
@@ -131,6 +132,42 @@ struct ApplicationData {
     Rml::String animal = "dog";
 } my_data;
 
+GuiObject::GuiObject(Rml::Context* context, string path, string name){
+    constructor = context->CreateDataModel("getIp");
+
+    this->name = name;
+    this->path = path;
+}
+
+GuiObject::~GuiObject(){
+    if(!document){
+        return;
+    }
+    document->Close();
+}
+
+void GuiObject::makeDocument(Rml::Context* context){
+    document = context->LoadDocument(path);    
+    if(!document){
+        cerr << "Failed to make GuiObject" << endl;
+    }
+}
+
+void GuiObject::bindString(string name, string* bindString){
+    constructor.Bind(name, bindString);
+}
+
+void GuiObject::showObject(bool show){
+    if(!document){
+        return;
+    }
+    if(show){
+        document->Show();
+        return;
+    }
+    document->Hide();
+}
+
 void Gui::init(int width, int height){
 	// Begin by installing the custom interfaces.
 	Rml::SetRenderInterface(&render_interface);
@@ -161,26 +198,49 @@ void Gui::init(int width, int height){
     for (const FontFace& face : font_faces){
         Rml::LoadFontFace(execute_path + "/fonts/" + face.filename, face.fallback_face);
     }    
-
-    if (Rml::DataModelConstructor constructor = context->CreateDataModel("animals"))
-    {
-        constructor.Bind("show_text", &my_data.show_text);
-        constructor.Bind("animal", &my_data.animal);
-    }
-
-    Rml::ElementDocument* document = context->LoadDocument(execute_path + "/ui/ip.rml");
-	if (!document)
-	{
-		Rml::Shutdown();
-	}
-
-    document->Show();
-
 }
 
 void Gui::render(){
     context->Update();
     context->Render();
+}
+
+void Gui::addElement(string path, string name){
+    for(GuiObject* element : objects){
+        if(element->name == name){
+            std::cerr << "trying to add GUI element with the same name as another. name: " << name << endl;
+            return;
+        }
+    }
+    GuiObject* object = new GuiObject(context, path, name);
+    objects.push_back(object);
+}
+
+void Gui::initElement(string name){
+    for(GuiObject* element : objects){
+        if(element->name == name){
+            element->makeDocument(context);
+            return;
+        }
+    }    
+}
+
+void Gui::bindStringToElement(string name, string dataName, string* bindString){
+    for(GuiObject* element : objects){
+        if(element->name == name){
+            element->bindString(dataName, bindString);
+            return;
+        }
+    }       
+}
+
+void Gui::showElement(string name, bool show){
+    for(GuiObject* element : objects){
+        if(element->name == name){
+            element->showObject(show);
+            return;
+        }
+    }    
 }
 
 void Gui::changeContextDimensions(int width, int height){
@@ -201,6 +261,8 @@ void Gui::processKeyUp(int key){
     Rml::Input::KeyIdentifier KeyIdentifier;
     if(key == 258){
         KeyIdentifier = Rml::Input::KI_TAB;
+    } else if(key == 259){
+        KeyIdentifier = Rml::Input::KI_BACK;
     }
 
     context->ProcessKeyUp(KeyIdentifier, 0);

@@ -2,7 +2,10 @@
 #include <RmlUi/Core.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
+#include <string>
+#include <vector>
 
+#include "RmlUi/Core/Context.h"
 #include "mesh.h"
 #include "shader.h"
 
@@ -35,10 +38,32 @@ public:
     OpenGLRenderInterface();
 };
 
+class GuiObject {
+public:
+    GuiObject(Rml::Context* context, string path, string name);
+    ~GuiObject();
+    void makeDocument(Rml::Context* context);
+    void showObject(bool show);
+    void bindString(string name, string* bindString);
+
+    string name = "None";
+private:
+    Rml::ElementDocument* document;
+    Rml::DataModelConstructor constructor;
+
+    string path;
+};
+
 class Gui {
 public:
     void init(int width, int height);
     void render();
+
+    void addElement(string path, string name);
+    void showElement(string name, bool show);
+    void bindStringToElement(string name, string dataName, string* bindString);
+    void initElement(string name);
+
     void changeContextDimensions(int width, int height);
     void processKeyDown(int key);
     void processKeyUp(int key);
@@ -55,4 +80,6 @@ private:
 
     int width;
     int height;
+
+    vector<GuiObject*> objects;
 };

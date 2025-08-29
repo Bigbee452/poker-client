@@ -13,9 +13,10 @@ public:
     void setScene(Scene* in_scene);
     void render_frame();
     bool shouldStop();
+
+    static inline Gui* gui;
 private:
     GLFWwindow* window;
-    static inline Gui* gui;
     static inline Scene* scene;
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void processInput(GLFWwindow *window);

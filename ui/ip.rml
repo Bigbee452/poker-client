@@ -4,8 +4,8 @@
     <link type="text/rcss" href="rml.rcss"/>
     <link type="text/rcss" href="ip.rcss"/>
 </head>
-<body data-model="animals">
+<body data-model="getIp">
     <p>Enter ip:</p>
-    <input type="text"/>
+    <input type="text" data-value="ipTextBox"/>
 </body>
 </rml>

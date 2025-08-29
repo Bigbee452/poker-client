@@ -57,8 +57,15 @@ int main(int argc, char* argv[])
     CardModel myModel(myScene);
     myModel.setPosition(0.0, 0.5, 0.0);
 
+    myWindow.gui->addElement(execute_path + "/ui/ip.rml", "getIp");
+    string ip = "";
+    myWindow.gui->bindStringToElement("getIp", "ipTextBox", &ip);
+    myWindow.gui->initElement("getIp");
+    myWindow.gui->showElement("getIp", true);
+
     // render loop
     // -----------
+    double prev_time = glfwGetTime();
     while (!myWindow.shouldStop())
     {
         const float radius = 2.0f;
@@ -75,6 +82,11 @@ int main(int argc, char* argv[])
         myModel.setRotation(glm::pi<float>()/2, 0, glfwGetTime());
 
         myWindow.render_frame();
+
+        if(glfwGetTime()-prev_time > 3.0f){
+            std::cout << ip << std::endl;
+            prev_time = glfwGetTime();
+        }
     }
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
