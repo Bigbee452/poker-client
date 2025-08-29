@@ -32,6 +32,10 @@ bool Window::init(int width, int height){
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, this->framebuffer_size_callback);
+    glfwSetKeyCallback(window, this->key_callback);
+    glfwSetCharCallback(window, this->character_callback);
+    glfwSetCursorPosCallback(window, this->cursor_position_callback);
+
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -94,4 +98,26 @@ void Window::processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+}
+
+void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods){
+    if(action == GLFW_PRESS){
+        gui->processKeyDown(key);
+    }
+}
+
+void Window::character_callback(GLFWwindow* window, unsigned int codepoint){
+    gui->processChar(codepoint);
+}
+
+void Window::cursor_position_callback(GLFWwindow* window, double xpos, double ypos){
+    gui->processMouseMove((int)xpos, (int)ypos);
+}
+
+void Window::mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
+    if(action == GLFW_PRESS){
+        gui->processMouseButtonDown(button);
+    } else if(action == GLFW_RELEASE){
+        gui->processMouseButtonUp(button);
+    }
 }

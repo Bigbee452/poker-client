@@ -5,7 +5,9 @@
 #include <iostream>
 #include <vector>
 #include "RmlUi/Core/Core.h"
+#include "RmlUi/Core/Input.h"
 #include "RmlUi/Core/Math.h"
+#include "RmlUi/Core/Types.h"
 #include "mesh.h"
 #include "vertexBuffer.h"
 
@@ -183,4 +185,43 @@ void Gui::render(){
 
 void Gui::changeContextDimensions(int width, int height){
     context->SetDimensions(Rml::Vector2i(width, height));
+}
+
+void Gui::processKeyDown(int key){
+    Rml::Input::KeyIdentifier KeyIdentifier;
+    if(key == 258){
+        KeyIdentifier = Rml::Input::KI_TAB;
+    } else if(key == 259){
+        KeyIdentifier = Rml::Input::KI_BACK;
+    }
+    context->ProcessKeyDown(KeyIdentifier, 0);
+}
+
+void Gui::processKeyUp(int key){
+    Rml::Input::KeyIdentifier KeyIdentifier;
+    if(key == 258){
+        KeyIdentifier = Rml::Input::KI_TAB;
+    }
+
+    context->ProcessKeyUp(KeyIdentifier, 0);
+}
+
+void Gui::processChar(unsigned int codepoint){
+    context->ProcessTextInput((Rml::Character)codepoint);
+}
+
+void Gui::processMouseMove(int x, int y){
+    context->ProcessMouseMove(x, y, 0);
+}
+
+void Gui::processMouseButtonUp(int buttonIndex){
+    if(buttonIndex < 3){
+        context->ProcessMouseButtonUp(buttonIndex, 0);
+    }
+}
+
+void Gui::processMouseButtonDown(int buttonIndex){
+    if(buttonIndex < 3){
+        context->ProcessMouseButtonDown(buttonIndex, 0);
+    }
 }

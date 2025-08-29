@@ -40,6 +40,12 @@ public:
     void init(int width, int height);
     void render();
     void changeContextDimensions(int width, int height);
+    void processKeyDown(int key);
+    void processKeyUp(int key);
+    void processChar(unsigned int codepoint);
+    void processMouseMove(int x, int y);
+    void processMouseButtonDown(int buttonIndex);
+    void processMouseButtonUp(int buttonIndex);
 private:
     // Instantiate the interfaces to RmlUi.
 	OpenGLRenderInterface render_interface;
