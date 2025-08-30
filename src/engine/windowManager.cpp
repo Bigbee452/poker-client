@@ -100,6 +100,10 @@ void Window::processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 }
 
+bool Window::getKey(int key){
+    return glfwGetKey(window, key) == GLFW_PRESS;
+}
+
 void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods){
     if(action == GLFW_PRESS){
         gui->processKeyDown(key);

@@ -1,6 +1,7 @@
 #include "engine/mesh.h"
 #include "engine/windowManager.h"
 #include "cards.h"
+#include "poker.h"
 #include <GLFW/glfw3.h>
 #include <filesystem>
 #include <glm/fwd.hpp>
@@ -57,11 +58,7 @@ int main(int argc, char* argv[])
     CardModel myModel(myScene);
     myModel.setPosition(0.0, 0.5, 0.0);
 
-    myWindow.gui->addElement(execute_path + "/ui/ip.rml", "getIp");
-    string ip = "";
-    myWindow.gui->bindStringToElement("getIp", "ipTextBox", &ip);
-    myWindow.gui->initElement("getIp");
-    myWindow.gui->showElement("getIp", true);
+    PokerClientStateMachine poker(&myWindow);
 
     // render loop
     // -----------
@@ -83,8 +80,9 @@ int main(int argc, char* argv[])
 
         myWindow.render_frame();
 
+        poker.update();
+
         if(glfwGetTime()-prev_time > 3.0f){
-            std::cout << ip << std::endl;
             prev_time = glfwGetTime();
         }
     }

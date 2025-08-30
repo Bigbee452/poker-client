@@ -13,6 +13,7 @@ public:
     void setScene(Scene* in_scene);
     void render_frame();
     bool shouldStop();
+    bool getKey(int key);
 
     static inline Gui* gui;
 private:
