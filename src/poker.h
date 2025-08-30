@@ -27,6 +27,9 @@ private:
     //global
     Window* window;
     sf::TcpSocket socket;
+    bool isMaster = false;
+    char buffer[1024];
+    std::size_t received;
 
     //Disconnected state
     string ip = "";

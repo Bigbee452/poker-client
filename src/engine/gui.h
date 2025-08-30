@@ -63,6 +63,7 @@ public:
     void showElement(string name, bool show);
     void bindStringToElement(string name, string dataName, string* bindString);
     void initElement(string name);
+    void deleteElement(string name);
 
     void changeContextDimensions(int width, int height);
     void processKeyDown(int key);

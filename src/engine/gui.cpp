@@ -225,6 +225,15 @@ void Gui::initElement(string name){
     }    
 }
 
+void Gui::deleteElement(string name){
+    for(int i = 0; i < objects.size(); i++){
+        if(objects[i]->name == name){
+            delete objects[i];
+            objects.erase(objects.begin()+i);
+        }
+    }  
+}
+
 void Gui::bindStringToElement(string name, string dataName, string* bindString){
     for(GuiObject* element : objects){
         if(element->name == name){
