@@ -38,6 +38,14 @@ public:
     OpenGLRenderInterface();
 };
 
+class ButtonListener : public Rml::EventListener {
+public:
+    ButtonListener(bool* boolCallBack);
+    void ProcessEvent(Rml::Event& event) override;
+private:
+    bool* Pressed;
+};
+
 class GuiObject {
 public:
     GuiObject(Rml::Context* context, string path, string name);
@@ -45,6 +53,7 @@ public:
     void makeDocument(Rml::Context* context);
     void showObject(bool show);
     void bindString(string name, string* bindString);
+    void bindButton(bool* callback);
 
     string name = "None";
 private:
@@ -64,6 +73,7 @@ public:
     void bindStringToElement(string name, string dataName, string* bindString);
     void initElement(string name);
     void deleteElement(string name);
+    void bindButtonToElement(string name, bool* callback);
 
     void changeContextDimensions(int width, int height);
     void processKeyDown(int key);

@@ -15,10 +15,13 @@ void PokerClientStateMachine::update(){
     switch(state){
         case PokerClientState::Disconnected:
             disconnected();
+            break;
         case PokerClientState::WaitForStart:
             waitForStart();
+            break;
         case PokerClientState::WaitForSetStart:
             waitForSetStart();
+            break;
     }
 }
 
@@ -26,14 +29,18 @@ void PokerClientStateMachine::initState(){
     switch(state){
         case PokerClientState::Disconnected:
             initDisconnected();
+            break;
         case PokerClientState::WaitForStart:
             initWaitForStart();
+            break;
         case PokerClientState::WaitForSetStart:
             initWaitForSetStart();
+            break;
     }
 }
 
 void PokerClientStateMachine::initDisconnected(){
+    cout << "POKER-STATE: Disconnected" << endl;
     window->gui->addElement(execute_path + "/ui/ip.rml", "getIp");
     window->gui->bindStringToElement("getIp", "ipTextBox", &ip);
     window->gui->initElement("getIp");
@@ -72,7 +79,7 @@ void PokerClientStateMachine::disconnected(){
 }
 
 void PokerClientStateMachine::initWaitForStart(){
-
+    cout << "POKER-STATE: WaitForStart" << endl;
 }
 
 void PokerClientStateMachine::waitForStart(){
@@ -84,7 +91,7 @@ void PokerClientStateMachine::waitForStart(){
             initState();
             return;
         } else if(msg_in == "id normal"){
-            cout << "normal" << endl;
+            cout << "Normal identifier received" << endl;
         } else {
             std::cout << "unexpected packet: " << msg_in << endl;
         }
@@ -92,9 +99,18 @@ void PokerClientStateMachine::waitForStart(){
 }
 
 void PokerClientStateMachine::initWaitForSetStart(){
+    cout << "POKER-STATE: WaitForSetStart" << endl;
 
+    window->gui->addElement(execute_path + "/ui/start.rml", "setStart");
+    window->gui->initElement("setStart");
+    pressed = false;
+    window->gui->bindButtonToElement("setStart", &pressed);
+    window->gui->showElement("setStart", true);
 }
 
 void PokerClientStateMachine::waitForSetStart(){
-
+    if(pressed){
+        std::cout << "button pressed" << endl;
+        pressed = false;
+    }
 }

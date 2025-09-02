@@ -34,4 +34,7 @@ private:
     //Disconnected state
     string ip = "";
     double prev_time;
+
+    //WaitForSetStart state
+    bool pressed = false;
 };

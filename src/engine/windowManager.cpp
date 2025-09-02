@@ -35,6 +35,7 @@ bool Window::init(int width, int height){
     glfwSetKeyCallback(window, this->key_callback);
     glfwSetCharCallback(window, this->character_callback);
     glfwSetCursorPosCallback(window, this->cursor_position_callback);
+    glfwSetMouseButtonCallback(window, this->mouse_button_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------

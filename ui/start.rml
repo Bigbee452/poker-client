@@ -1,0 +1,10 @@
+<rml>
+<head>
+    <title>Hello world</title>
+    <link type="text/rcss" href="rml.rcss"/>
+    <link type="text/rcss" href="start.css"/>
+</head>
+<body data-model="setStart">
+    <button id="manageClick">Start game</button>
+</body>
+</rml>

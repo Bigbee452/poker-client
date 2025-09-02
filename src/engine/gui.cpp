@@ -132,8 +132,18 @@ struct ApplicationData {
     Rml::String animal = "dog";
 } my_data;
 
+ButtonListener::ButtonListener(bool* boolCallBack){
+    Pressed = boolCallBack;
+}
+
+void ButtonListener::ProcessEvent(Rml::Event& event) {
+    if (event == "click") {
+        *Pressed = true;
+    }
+}
+
 GuiObject::GuiObject(Rml::Context* context, string path, string name){
-    constructor = context->CreateDataModel("getIp");
+    constructor = context->CreateDataModel(name);
 
     this->name = name;
     this->path = path;
@@ -166,6 +176,15 @@ void GuiObject::showObject(bool show){
         return;
     }
     document->Hide();
+}
+
+void GuiObject::bindButton(bool* callback){
+    Rml::Element* button = document->GetElementById("manageClick");
+    if(button){
+        button->AddEventListener("click", new ButtonListener(callback));
+    } else {
+        std::cout << "No buttons found" << endl;
+    }
 }
 
 void Gui::init(int width, int height){
@@ -238,6 +257,15 @@ void Gui::bindStringToElement(string name, string dataName, string* bindString){
     for(GuiObject* element : objects){
         if(element->name == name){
             element->bindString(dataName, bindString);
+            return;
+        }
+    }       
+}
+
+void Gui::bindButtonToElement(string name, bool* callback){
+    for(GuiObject* element : objects){
+        if(element->name == name){
+            element->bindButton(callback);
             return;
         }
     }       
