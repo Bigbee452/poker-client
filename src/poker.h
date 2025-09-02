@@ -5,7 +5,8 @@
 enum class PokerClientState {
     Disconnected,
     WaitForStart,
-    WaitForSetStart
+    WaitForSetStart,
+    SetStart
 };
 
 class PokerClientStateMachine {
@@ -21,6 +22,8 @@ private:
     void waitForStart();
     void initWaitForSetStart();
     void waitForSetStart();
+    void initSetStart();
+    void setStart();
 
     PokerClientState state;
 

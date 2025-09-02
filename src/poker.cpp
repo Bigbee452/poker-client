@@ -1,4 +1,5 @@
 #include "poker.h"
+#include "network.h"
 #include <GLFW/glfw3.h>
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Socket.hpp>
@@ -22,6 +23,9 @@ void PokerClientStateMachine::update(){
         case PokerClientState::WaitForSetStart:
             waitForSetStart();
             break;
+        case PokerClientState::SetStart:
+            setStart();
+            break;
     }
 }
 
@@ -35,6 +39,9 @@ void PokerClientStateMachine::initState(){
             break;
         case PokerClientState::WaitForSetStart:
             initWaitForSetStart();
+            break;
+        case PokerClientState::SetStart:
+            initSetStart();
             break;
     }
 }
@@ -110,7 +117,24 @@ void PokerClientStateMachine::initWaitForSetStart(){
 
 void PokerClientStateMachine::waitForSetStart(){
     if(pressed){
-        std::cout << "button pressed" << endl;
         pressed = false;
+
+        
+        window->gui->showElement("setStart", false);
+        window->gui->deleteElement("setStart");
+        state = PokerClientState::SetStart;
+        initState();
     }
+}
+
+void PokerClientStateMachine::initSetStart(){
+    cout << "POKER-STATE: SetStart" << endl;
+    string startStr = "start";
+    if(!send_all(socket, startStr.c_str(), startStr.size())){
+        std::cout << "failed to send start message" << std::endl;
+    }
+}
+
+void PokerClientStateMachine::setStart(){
+
 }
