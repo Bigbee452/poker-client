@@ -55,10 +55,10 @@ int main(int argc, char* argv[])
 
     buildScene(myScene);
 
-    CardModel myModel(myScene);
+    CardModel myModel(myScene, 2);
     myModel.setPosition(0.0, 0.5, 0.0);
 
-    PokerClientStateMachine poker(&myWindow);
+    PokerClientStateMachine poker(&myWindow, myScene);
 
     // render loop
     // -----------

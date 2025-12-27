@@ -2,6 +2,7 @@
 #include <glm/fwd.hpp>
 #include <string>
 #include <vector>
+#include "engine/model.h"
 #include "engine/windowManager.h"
 
 struct Card {
@@ -38,7 +39,8 @@ struct Card {
 
 class CardModel {
 public:
-    CardModel(Scene* scene);
+    CardModel(Scene* scene, int id);
+    ~CardModel();
     void setRotation(glm::vec3 rotation);
     void setRotation(float x, float y, float z);
     void setPosition(glm::vec3 position);
@@ -69,6 +71,7 @@ class Deck {
         void shuffle();
         void clear();
         void add_cards(std::vector<Card> in_cards);
+        void add_cards(Card in_cards);
         std::vector<Card> take_cards(int number);
         std::vector<Card> vieuw_cards(int number);
         void print_deck();

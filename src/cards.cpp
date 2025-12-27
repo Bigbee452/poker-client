@@ -28,10 +28,11 @@ Deck::Deck(){
 
 int initialized_cards = 0;
 
-CardModel::CardModel(Scene* scene){
+CardModel::CardModel(Scene* scene, int id){
     this->scene = scene;
     model_id = initialized_cards;
     initialized_cards++;
+    card_id = id;
 
     front_mat = new Material;
     front_mat->ambient = glm::vec3(1.0f);
@@ -71,6 +72,12 @@ CardModel::CardModel(Scene* scene){
     back = scene->get_model(name);
 
     front->setRotation(glm::pi<float>(), 0.0f, 0.0f);
+}
+
+CardModel::~CardModel(){
+    std::string name = "card_front";
+    name += std::to_string(model_id);
+    scene->remove_model(name);
 }
 
 void CardModel::setRotation(glm::vec3 rotation){
@@ -153,6 +160,10 @@ void Deck::add_cards(std::vector<Card> in_cards){
     for(Card card : in_cards){
         cards.push_back(card);
     }
+}
+
+void Deck::add_cards(Card in_cards){
+    cards.push_back(in_cards);
 }
 
 void Deck::print_deck(){

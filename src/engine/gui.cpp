@@ -147,13 +147,16 @@ GuiObject::GuiObject(Rml::Context* context, string path, string name){
 
     this->name = name;
     this->path = path;
+    this->context = context;
 }
 
 GuiObject::~GuiObject(){
+    context->RemoveDataModel(name);
     if(!document){
         return;
     }
     document->Close();
+    
 }
 
 void GuiObject::makeDocument(Rml::Context* context){

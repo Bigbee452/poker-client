@@ -42,6 +42,16 @@ void Scene::add_model(std::string path, std::string name, Material* mat){
     models.push_back(model);
 }
 
+void Scene::remove_model(std::string name){
+    for(int i = 0; i < models.size(); i++){
+        if(models[i]->name == name){
+            delete models[i];
+            models.erase(models.begin()+i);
+            return;
+        }
+    }
+}
+
 Model* Scene::get_model(std::string name){
     for(Model* model : models){
         if(model->name == name){

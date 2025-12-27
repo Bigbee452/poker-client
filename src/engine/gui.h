@@ -58,6 +58,7 @@ public:
     string name = "None";
 private:
     Rml::ElementDocument* document;
+    Rml::Context* context;
     Rml::DataModelConstructor constructor;
 
     string path;

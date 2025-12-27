@@ -5,6 +5,7 @@
     <link type="text/rcss" href="start.css"/>
 </head>
 <body data-model="setStart">
+    <input type="text" pattern="[0-9]*" data-value="startCoins"/>
     <button id="manageClick">Start game</button>
 </body>
 </rml>

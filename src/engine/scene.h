@@ -21,6 +21,7 @@ class Scene {
 
         void add_model(std::string path, std::string name);
         void add_model(std::string path, std::string name, Material* mat);
+        void remove_model(std::string name);
         Model* get_model(std::string name);
         void draw();
 

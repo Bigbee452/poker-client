@@ -1,4 +1,5 @@
 #pragma once
+#include "cards.h"
 #include "engine/windowManager.h"
 #include <SFML/Network/TcpSocket.hpp>
 
@@ -6,12 +7,15 @@ enum class PokerClientState {
     Disconnected,
     WaitForStart,
     WaitForSetStart,
-    SetStart
+    SetStart,
+    InGame,
+    SendInt,
+    GetHand
 };
 
 class PokerClientStateMachine {
 public:
-    PokerClientStateMachine(Window* window);
+    PokerClientStateMachine(Window* window, Scene* scene);
     void update();
 private:
     void initState();
@@ -24,8 +28,17 @@ private:
     void waitForSetStart();
     void initSetStart();
     void setStart();
+    void initInGame();
+    void inGame();
+    void initSendInt();
+    void sendInt();
+    void initGetHand();
+    void getHand();
 
     PokerClientState state;
+
+    Scene* scene;
+    std::vector<CardModel> handCardsModel = {};
 
     //global
     Window* window;
@@ -40,4 +53,12 @@ private:
 
     //WaitForSetStart state
     bool pressed = false;
+
+    //setStart state
+    string startCoins = "";
+
+    //getHand state
+    int getHandReceiveState = 0; //0: get number of cards 1: receive cards
+    int numCards = 0;
+    Deck handCards;
 };
