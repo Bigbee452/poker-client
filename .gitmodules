@@ -4,3 +4,6 @@
 [submodule "external/RmlUi"]
 	path = external/RmlUi
 	url = https://github.com/mikke89/RmlUi.git
+[submodule "external/BBEngine"]
+	path = external/BBEngine
+	url = https://github.com/Bigbee452/BBEngine.git
