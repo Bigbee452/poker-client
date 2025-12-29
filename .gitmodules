@@ -7,3 +7,6 @@
 [submodule "external/glm"]
 	path = external/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "external/BBEngine"]
+	path = external/BBEngine
+	url = https://github.com/Bigbee452/BBEngine.git
