@@ -38,4 +38,4 @@ add_subdirectory(external/RmlUi)
 add_subdirectory(src)
 target_include_directories(poker-client PRIVATE include)
 
-target_link_libraries(poker-client PRIVATE glad glfw assimp SFML::Network RmlUi::Core RmlUi::Debugger)
+target_link_libraries(poker-client PRIVATE glad glfw assimp SFML::Network RmlUi::Core RmlUi::Debugger glm::glm)
