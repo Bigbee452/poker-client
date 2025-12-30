@@ -1,6 +1,6 @@
 #pragma once
 #include "cards.h"
-#include "engine/windowManager.h"
+#include "windowManager.h"
 #include <SFML/Network/TcpSocket.hpp>
 
 enum class PokerClientState {
