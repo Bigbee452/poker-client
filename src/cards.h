@@ -2,8 +2,8 @@
 #include <glm/fwd.hpp>
 #include <string>
 #include <vector>
-#include "engine/model.h"
-#include "engine/windowManager.h"
+#include "model.h"
+#include "windowManager.h"
 
 struct Card {
     int card_id; //spades 0=ace, 2=2, ..., 12=king, Hearts 13=1, ..., Diamonds, Cubs

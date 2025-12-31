@@ -1,5 +1,4 @@
-#include "engine/mesh.h"
-#include "engine/windowManager.h"
+#include "windowManager.h"
 #include "cards.h"
 #include "poker.h"
 #include <GLFW/glfw3.h>
@@ -36,15 +35,15 @@ int main(int argc, char* argv[])
     std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
     execute_path = exePath;
 
-    Window myWindow;
-    myWindow.init(SCR_WIDTH, SCR_HEIGHT);
+    Window* myWindow = getWindow();
+    myWindow->init(SCR_WIDTH, SCR_HEIGHT);
 
     glm::vec3 cameraPos = glm::vec3(3.0f, 1.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
     myScene = new Scene(exePath);
-    myWindow.setScene(myScene);
+    myWindow->setScene(myScene);
     myScene->set_projection(SCR_WIDTH, SCR_HEIGHT);
 
     myScene->cam->set_pos(cameraPos);
@@ -58,12 +57,12 @@ int main(int argc, char* argv[])
     CardModel myModel(myScene, 2);
     myModel.setPosition(0.0, 0.5, 0.0);
 
-    PokerClientStateMachine poker(&myWindow, myScene);
+    PokerClientStateMachine poker(myWindow, myScene);
 
     // render loop
     // -----------
     double prev_time = glfwGetTime();
-    while (!myWindow.shouldStop())
+    while (!myWindow->shouldStop())
     {
         const float radius = 2.0f;
         float lightX = sin(glfwGetTime()) * radius;
@@ -78,7 +77,7 @@ int main(int argc, char* argv[])
         myModel.setPosition(0.0f, 0.5+0.1*sin(2*glfwGetTime()), 0.0f);
         myModel.setRotation(glm::pi<float>()/2, 0, glfwGetTime());
 
-        myWindow.render_frame();
+        myWindow->render_frame();
 
         poker.update();
 

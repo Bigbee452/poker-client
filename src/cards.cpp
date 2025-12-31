@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "cards.h"
-#include "engine/mesh.h"
+#include "mesh.h"
 
 Deck::Deck(bool start_full){
     if(start_full){
