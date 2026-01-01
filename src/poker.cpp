@@ -44,6 +44,9 @@ void PokerClientStateMachine::update(){
         case PokerClientState::GetHand:
             getHand();
             break;
+        case PokerClientState::GetChips:
+            getChips();
+            break;
     }
 }
 
@@ -69,6 +72,9 @@ void PokerClientStateMachine::initState(){
             break;
         case PokerClientState::GetHand:
             initGetHand();
+            break;
+        case PokerClientState::GetChips:
+            initGetChips();
             break;
     }
 }
@@ -204,6 +210,10 @@ void PokerClientStateMachine::inGame(){
             state = PokerClientState::GetHand;
             initState();
             return;
+        } else if(msg == "chips"){
+            state = PokerClientState::GetChips;
+            initState();
+            return;
         } else {
             cout << "unknown message: " << msg << endl;
         }
@@ -304,4 +314,29 @@ void PokerClientStateMachine::getHand(){
         initState();
         return;
     }
+}
+
+void PokerClientStateMachine::initGetChips(){
+    cout << "POKER-STATE: GetChips" << endl;
+    string id = "chips ok";  
+    send_all(socket, id.c_str(), id.size());  
+}
+
+void PokerClientStateMachine::getChips(){
+    std::string ok_msg = "chips ok";
+    sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);    
+    if(status == sf::Socket::Status::Done){
+        string chipsStr = string(buffer, received);
+        chips = atoi(chipsStr.c_str());
+        send_all(socket, ok_msg.c_str(), ok_msg.size());  
+        std::cout << "current amount of chips: " << chips << std::endl;
+        state = PokerClientState::InGame;
+        initState();
+        return;
+    } else if (status == sf::Socket::Status::Disconnected) {
+        std::cerr << "Disconnected from server.\n";
+        state = PokerClientState::Disconnected;
+        initState();
+        return;
+    }  
 }

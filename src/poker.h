@@ -10,7 +10,8 @@ enum class PokerClientState {
     SetStart,
     InGame,
     SendInt,
-    GetHand
+    GetHand,
+    GetChips
 };
 
 class PokerClientStateMachine {
@@ -34,6 +35,8 @@ private:
     void sendInt();
     void initGetHand();
     void getHand();
+    void initGetChips();
+    void getChips();
 
     PokerClientState state;
 
@@ -61,4 +64,6 @@ private:
     int getHandReceiveState = 0; //0: get number of cards 1: receive cards
     int numCards = 0;
     Deck handCards;
+
+    int chips = 0;
 };

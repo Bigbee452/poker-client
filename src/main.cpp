@@ -1,5 +1,4 @@
 #include "windowManager.h"
-#include "cards.h"
 #include "poker.h"
 #include <GLFW/glfw3.h>
 #include <filesystem>
