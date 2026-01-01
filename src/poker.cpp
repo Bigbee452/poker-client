@@ -11,7 +11,7 @@
 #include <vector>
 #include "cards.h"
 
-std::vector<glm::vec3> handCardPositions = {glm::vec3(0.1, 0, 0), glm::vec3(0.4, 0, 0)};
+std::vector<glm::vec3> handCardPositions = {glm::vec3(1.2, 0, 0.2), glm::vec3(1.2, 0, -0.2)};
 
 PokerClientStateMachine::PokerClientStateMachine(Window* window, Scene* scene){
     this->window = window;
@@ -283,9 +283,9 @@ void PokerClientStateMachine::getHand(){
             while (std::getline(ss, card_str, ',')) {
                 Card card;
                 card.card_id = atoi(card_str.c_str());
-                CardModel cardModel(scene, card.card_id);
-                cardModel.setPosition(handCardPositions[index%2]);
-                cardModel.setRotation(glm::pi<float>(), glm::pi<float>(), 0);
+                CardModel* cardModel = new CardModel(scene, card.card_id);
+                cardModel->setPosition(handCardPositions[index%2]);
+                cardModel->setRotation(glm::pi<float>()/2, glm::pi<float>()/2, glm::pi<float>()/2);
 
                 handCards.add_cards(card);
                 handCardsModel.push_back(cardModel);

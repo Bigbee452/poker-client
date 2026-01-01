@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     Window* myWindow = getWindow();
     myWindow->init(SCR_WIDTH, SCR_HEIGHT);
 
-    glm::vec3 cameraPos = glm::vec3(3.0f, 1.0f, 0.0f);  
+    glm::vec3 cameraPos = glm::vec3(2.0f, 1.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
@@ -53,9 +53,6 @@ int main(int argc, char* argv[])
     myScene->light_pos = lightPos;
 
     buildScene(myScene);
-
-    CardModel myModel(myScene, 2);
-    myModel.setPosition(0.0, 0.5, 0.0);
 
     PokerClientStateMachine poker(myWindow, myScene);
 
@@ -72,10 +69,6 @@ int main(int argc, char* argv[])
         lightPos = glm::vec3(lightX, lightY, lightZ);  
 
         myScene->light_pos = lightPos;
-
-
-        myModel.setPosition(0.0f, 0.5+0.1*sin(2*glfwGetTime()), 0.0f);
-        myModel.setRotation(glm::pi<float>()/2, 0, glfwGetTime());
 
         myWindow->render_frame();
 

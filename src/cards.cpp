@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "cards.h"
+#include "glm/ext/vector_float3.hpp"
 #include "mesh.h"
 
 Deck::Deck(bool start_full){
@@ -98,6 +99,7 @@ void CardModel::setPosition(float x, float y, float z){
 
 void CardModel::setPreTransform(){
     pre_transform = glm::mat4(1.0f);
+    pre_transform = glm::scale(pre_transform, glm::vec3(0.6, 0.6, 0.6));
     pre_transform = glm::translate(pre_transform, position);
     pre_transform = glm::rotate(pre_transform, rotation.x, glm::vec3(1.0, 0.0, 0.0));
     pre_transform = glm::rotate(pre_transform, rotation.y, glm::vec3(0.0, 1.0, 0.0));

@@ -38,7 +38,7 @@ private:
     PokerClientState state;
 
     Scene* scene;
-    std::vector<CardModel> handCardsModel = {};
+    std::vector<CardModel*> handCardsModel = {};
 
     //global
     Window* window;
