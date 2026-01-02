@@ -2,6 +2,7 @@
 #include "cards.h"
 #include "windowManager.h"
 #include <SFML/Network/TcpSocket.hpp>
+#include <string>
 
 enum class PokerClientState {
     Disconnected,
@@ -11,7 +12,8 @@ enum class PokerClientState {
     InGame,
     SendInt,
     GetHand,
-    GetChips
+    GetChips,
+    GetLastBet
 };
 
 class PokerClientStateMachine {
@@ -37,6 +39,8 @@ private:
     void getHand();
     void initGetChips();
     void getChips();
+    void initGetLastBet();
+    void getLastBet();
 
     PokerClientState state;
 
@@ -65,5 +69,6 @@ private:
     int numCards = 0;
     Deck handCards;
 
-    int chips = 0;
+    int chips = -1;
+    int lastbet = -1;
 };

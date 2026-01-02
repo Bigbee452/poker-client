@@ -1,0 +1,13 @@
+<rml>
+<head>
+    <title>Hello world</title>
+    <link type="text/rcss" href="rml.rcss"/>
+    <link type="text/rcss" href="stats.css"/>
+</head>
+<body data-model="setStats">
+    <div id="hud">
+        <p id="coins">COINS: -1</p>
+        <p id="lastbet">LAST BET: -1</p>
+    </div>
+</body>
+</rml>

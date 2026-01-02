@@ -17,6 +17,10 @@ PokerClientStateMachine::PokerClientStateMachine(Window* window, Scene* scene){
     this->window = window;
     this->scene = scene;
 
+    window->gui->addElement(execute_path + "/ui/stats.rml", "setStats");
+    window->gui->initElement("setStats");
+    window->gui->showElement("setStats", true);
+
     state = PokerClientState::Disconnected;
     initState();
 }
@@ -47,6 +51,9 @@ void PokerClientStateMachine::update(){
         case PokerClientState::GetChips:
             getChips();
             break;
+        case PokerClientState::GetLastBet:
+            getLastBet();
+            break;
     }
 }
 
@@ -76,6 +83,8 @@ void PokerClientStateMachine::initState(){
         case PokerClientState::GetChips:
             initGetChips();
             break;
+        case PokerClientState::GetLastBet:
+            initGetLastBet();
     }
 }
 
@@ -214,6 +223,10 @@ void PokerClientStateMachine::inGame(){
             state = PokerClientState::GetChips;
             initState();
             return;
+        } else if(msg == "lastbet"){
+            state = PokerClientState::GetLastBet;
+            initState();
+            return;
         } else {
             cout << "unknown message: " << msg << endl;
         }
@@ -326,8 +339,9 @@ void PokerClientStateMachine::getChips(){
     std::string ok_msg = "chips ok";
     sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);    
     if(status == sf::Socket::Status::Done){
-        string chipsStr = string(buffer, received);
-        chips = atoi(chipsStr.c_str());
+        string chipsStrIn = string(buffer, received);
+        chips = atoi(chipsStrIn.c_str());
+        window->gui->SetElementText("setStats", "coins", "COINS: "+to_string(chips));
         send_all(socket, ok_msg.c_str(), ok_msg.size());  
         std::cout << "current amount of chips: " << chips << std::endl;
         state = PokerClientState::InGame;
@@ -339,4 +353,30 @@ void PokerClientStateMachine::getChips(){
         initState();
         return;
     }  
+}
+
+void PokerClientStateMachine::initGetLastBet(){
+    cout << "POKER-STATE: GetLastBet" << endl;
+    string id = "lastbet ok";  
+    send_all(socket, id.c_str(), id.size());  
+}
+
+void PokerClientStateMachine::getLastBet(){
+    std::string ok_msg = "lastbet ok";
+    sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);    
+    if(status == sf::Socket::Status::Done){
+        string lastbetStr = string(buffer, received);
+        lastbet = atoi(lastbetStr.c_str());
+        window->gui->SetElementText("setStats", "lastbet", "LASTBET: "+to_string(lastbet));
+        send_all(socket, ok_msg.c_str(), ok_msg.size());  
+        std::cout << "lastbet amount: " << lastbet << std::endl;
+        state = PokerClientState::InGame;
+        initState();
+        return;
+    } else if (status == sf::Socket::Status::Disconnected) {
+        std::cerr << "Disconnected from server.\n";
+        state = PokerClientState::Disconnected;
+        initState();
+        return;
+    }      
 }

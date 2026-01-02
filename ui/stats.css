@@ -1,0 +1,38 @@
+body {
+    font-family: LatoLatin;
+    font-size: 18px;
+    width: 100%;
+}
+
+p {
+    color: white;
+}
+
+#hud {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* optional, good for HUD text */
+}
+
+/* Shared text style */
+#hud p {
+    position: absolute;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Top-left label */
+#coins {
+    left: 10px;
+    top: 10px;
+}
+
+/* Top-right label */
+#lastbet {
+    right: 10px;
+    top: 10px;
+    text-align: right;
+}
