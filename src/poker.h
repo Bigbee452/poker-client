@@ -13,7 +13,8 @@ enum class PokerClientState {
     SendInt,
     GetHand,
     GetChips,
-    GetLastBet
+    GetLastBet,
+    GetBet
 };
 
 class PokerClientStateMachine {
@@ -41,6 +42,8 @@ private:
     void getChips();
     void initGetLastBet();
     void getLastBet();
+    void initGetBet();
+    void getBet();
 
     PokerClientState state;
 
@@ -69,6 +72,15 @@ private:
     int numCards = 0;
     Deck handCards;
 
+    //getBet
+    bool pressed1 = false;
+    bool pressed2 = false;
+    bool has_recv_cf = false;
+    string raiseAmount = "";
+
     int chips = -1;
     int lastbet = -1;
+
+    bool folded = false;
+
 };

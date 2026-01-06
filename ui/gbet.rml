@@ -1,0 +1,18 @@
+<rml>
+<head>
+	<title>Centered Buttons</title>
+    <link type="text/rcss" href="rml.rcss"/>
+    <link type="text/rcss" href="gbet.css"/>
+	<style>
+	</style>
+</head>
+
+<body data-model="gbet">
+	<div id="button_container">
+		<input type="text" pattern="[0-9]*" data-value="raiseAmount"/>
+		<button id="raise">Raise</button>
+		<button id="call">Call</button>
+		<button id="fold">Fold</button>
+	</div>
+</body>
+</rml>

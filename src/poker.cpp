@@ -54,6 +54,9 @@ void PokerClientStateMachine::update(){
         case PokerClientState::GetLastBet:
             getLastBet();
             break;
+        case PokerClientState::GetBet:
+            getBet();
+            break;
     }
 }
 
@@ -85,6 +88,10 @@ void PokerClientStateMachine::initState(){
             break;
         case PokerClientState::GetLastBet:
             initGetLastBet();
+            break;
+        case PokerClientState::GetBet:
+            initGetBet();
+            break;
     }
 }
 
@@ -162,7 +169,7 @@ void PokerClientStateMachine::initWaitForSetStart(){
     window->gui->bindStringToElement("setStart", "startCoins", &startCoins);
     window->gui->initElement("setStart");
     pressed = false;
-    window->gui->bindButtonToElement("setStart", &pressed);
+    window->gui->bindButtonToElement("setStart", "manageClick",&pressed);
     window->gui->showElement("setStart", true);
 }
 
@@ -227,7 +234,11 @@ void PokerClientStateMachine::inGame(){
             state = PokerClientState::GetLastBet;
             initState();
             return;
-        } else {
+        } else if(msg == "gbet"){
+            state = PokerClientState::GetBet;
+            initState();
+            return;
+        }  else {
             cout << "unknown message: " << msg << endl;
         }
     } else if (status == sf::Socket::Status::Disconnected) {
@@ -367,9 +378,9 @@ void PokerClientStateMachine::getLastBet(){
     if(status == sf::Socket::Status::Done){
         string lastbetStr = string(buffer, received);
         lastbet = atoi(lastbetStr.c_str());
-        window->gui->SetElementText("setStats", "lastbet", "LASTBET: "+to_string(lastbet));
         send_all(socket, ok_msg.c_str(), ok_msg.size());  
         std::cout << "lastbet amount: " << lastbet << std::endl;
+        window->gui->SetElementText("setStats", "lastbet", "LASTBET: "+to_string(lastbet));
         state = PokerClientState::InGame;
         initState();
         return;
@@ -379,4 +390,59 @@ void PokerClientStateMachine::getLastBet(){
         initState();
         return;
     }      
+}
+
+void PokerClientStateMachine::initGetBet(){
+    cout << "POKER-STATE: GetBet" << endl;
+    string id = "gbet ok";  
+    send_all(socket, id.c_str(), id.size());  
+
+    window->gui->addElement(execute_path + "/ui/gbet.rml", "gbet");
+    window->gui->bindStringToElement("gbet", "raiseAmount", &raiseAmount);
+    window->gui->initElement("gbet");
+    pressed = false;
+    window->gui->bindButtonToElement("gbet", "raise", &pressed);
+    window->gui->bindButtonToElement("gbet", "call", &pressed1);
+    window->gui->bindButtonToElement("gbet", "fold", &pressed2);
+    window->gui->showElement("gbet", true);
+}
+
+void PokerClientStateMachine::getBet(){
+    if(!has_recv_cf){
+        sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);  
+        if(status == sf::Socket::Status::Done){
+            has_recv_cf = true;
+        }
+        return;
+    }
+    if(pressed){
+        std::cout << "raise" << endl;
+        pressed = false;
+        std::cout << raiseAmount << std::endl;
+        string raiseStr = to_string(stoi(raiseAmount)+3);
+        send_all(socket, raiseStr.c_str(), raiseStr.size());  
+        window->gui->showElement("gbet", false);
+        window->gui->deleteElement("gbet");
+        state = PokerClientState::InGame;
+        initState();
+    } else if(pressed1){
+        cout << "call" << endl;
+        pressed1 = false;
+        string callStr = "2";
+        send_all(socket, callStr.c_str(), callStr.size());  
+        window->gui->showElement("gbet", false);
+        window->gui->deleteElement("gbet");
+        state = PokerClientState::InGame;
+        initState();
+    } else if(pressed2){
+        cout << "folded" << endl;
+        folded = true;
+        pressed2=false;
+        string foldStr = "1";
+        send_all(socket, foldStr.c_str(), foldStr.size());
+        window->gui->showElement("gbet", false);
+        window->gui->deleteElement("gbet");  
+        state = PokerClientState::InGame;
+        initState();
+    }
 }
