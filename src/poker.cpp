@@ -57,6 +57,9 @@ void PokerClientStateMachine::update(){
         case PokerClientState::GetBet:
             getBet();
             break;
+        case PokerClientState::GetComCards:
+            getComCards();
+            break;
     }
 }
 
@@ -91,6 +94,9 @@ void PokerClientStateMachine::initState(){
             break;
         case PokerClientState::GetBet:
             initGetBet();
+            break;
+        case PokerClientState::GetComCards:
+            initGetComCards();
             break;
     }
 }
@@ -238,7 +244,11 @@ void PokerClientStateMachine::inGame(){
             state = PokerClientState::GetBet;
             initState();
             return;
-        }  else {
+        } else if(msg == "comcards"){
+            state = PokerClientState::GetComCards;
+            initState();
+            return;
+        } else {
             cout << "unknown message: " << msg << endl;
         }
     } else if (status == sf::Socket::Status::Disconnected) {
@@ -444,5 +454,69 @@ void PokerClientStateMachine::getBet(){
         window->gui->deleteElement("gbet");  
         state = PokerClientState::InGame;
         initState();
+    }
+}
+
+void PokerClientStateMachine::initGetComCards(){
+    cout << "POKER-STATE: GetComCards" << endl;
+    string id = "hand ok";
+    send_all(socket, id.c_str(), id.size());
+    getComReceiveState = 0;
+    communityCards.clear();
+}
+
+void PokerClientStateMachine::getComCards(){
+    std::string ok_msg = "cards ok";
+
+    if(getComReceiveState == 0){
+        sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);
+        if(status == sf::Socket::Status::Done){
+            string msg = string(buffer, received);
+            numCards = atoi(msg.c_str());
+            send_all(socket, ok_msg.c_str(), ok_msg.size());
+            getComReceiveState = 1;
+        } else if (status == sf::Socket::Status::Disconnected) {
+            std::cerr << "Disconnected from server.\n";
+            state = PokerClientState::Disconnected;
+            initState();
+            return;
+        }  
+    } else if(getComReceiveState == 1){
+        sf::Socket::Status status = socket.receive(buffer, sizeof(buffer), received);
+        if(status == sf::Socket::Status::Done){
+            string msg = string(buffer, received);
+            send_all(socket, ok_msg.c_str(), ok_msg.size());
+            
+            std::string card_str;
+            std::stringstream ss(msg);
+
+            int index = 0;
+
+            //handCardsModel.clear();
+            while (std::getline(ss, card_str, ',')) {
+                Card card;
+                card.card_id = atoi(card_str.c_str());
+                /*
+                CardModel* cardModel = new CardModel(scene, card.card_id);
+                cardModel->setPosition(handCardPositions[index%2]);
+                cardModel->setRotation(glm::pi<float>()/2, glm::pi<float>()/2, glm::pi<float>()/2);
+                */
+
+                communityCards.add_cards(card);
+                //handCardsModel.push_back(cardModel);
+                index++;
+            }
+
+            communityCards.print_deck();
+            state = PokerClientState::InGame;
+            initState();
+            return;
+        }
+    } else {
+        cout << "Unknown getHand message, Disconnecting" << endl;
+        socket.disconnect();
+        state = PokerClientState::Disconnected;
+        initState();
+        return;
     }
 }

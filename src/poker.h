@@ -14,7 +14,8 @@ enum class PokerClientState {
     GetHand,
     GetChips,
     GetLastBet,
-    GetBet
+    GetBet,
+    GetComCards
 };
 
 class PokerClientStateMachine {
@@ -44,6 +45,8 @@ private:
     void getLastBet();
     void initGetBet();
     void getBet();
+    void initGetComCards();
+    void getComCards();
 
     PokerClientState state;
 
@@ -71,6 +74,10 @@ private:
     int getHandReceiveState = 0; //0: get number of cards 1: receive cards
     int numCards = 0;
     Deck handCards;
+
+    //getComCards state
+    int getComReceiveState = 0; //0: get number of cards 1: receive cards
+    Deck communityCards;
 
     //getBet
     bool pressed1 = false;
