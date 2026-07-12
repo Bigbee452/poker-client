@@ -52,6 +52,7 @@ private:
 
     Scene* scene;
     std::vector<CardModel*> handCardsModel = {};
+    std::vector<CardModel*> ComCardsModel = {};
 
     //global
     Window* window;

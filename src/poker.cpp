@@ -12,6 +12,7 @@
 #include "cards.h"
 
 std::vector<glm::vec3> handCardPositions = {glm::vec3(1.2, 0, 0.2), glm::vec3(1.2, 0, -0.2)};
+std::vector<glm::vec3> ComCardPositions = {glm::vec3(0.8, 0, -0.6), glm::vec3(0.8, 0, -0.2), glm::vec3(0.8, 0, 0.2), glm::vec3(0.8, 0, 0.6), glm::vec3(0.8, 0, 1.0)};
 
 PokerClientStateMachine::PokerClientStateMachine(Window* window, Scene* scene){
     this->window = window;
@@ -323,7 +324,7 @@ void PokerClientStateMachine::getHand(){
 
             int index = 0;
 
-            //handCardsModel.clear();
+            handCardsModel.clear();
             while (std::getline(ss, card_str, ',')) {
                 Card card;
                 card.card_id = atoi(card_str.c_str());
@@ -459,7 +460,7 @@ void PokerClientStateMachine::getBet(){
 
 void PokerClientStateMachine::initGetComCards(){
     cout << "POKER-STATE: GetComCards" << endl;
-    string id = "hand ok";
+    string id = "comcards ok";
     send_all(socket, id.c_str(), id.size());
     getComReceiveState = 0;
     communityCards.clear();
@@ -492,18 +493,17 @@ void PokerClientStateMachine::getComCards(){
 
             int index = 0;
 
-            //handCardsModel.clear();
+            ComCardsModel.clear();
             while (std::getline(ss, card_str, ',')) {
                 Card card;
                 card.card_id = atoi(card_str.c_str());
-                /*
+                
                 CardModel* cardModel = new CardModel(scene, card.card_id);
-                cardModel->setPosition(handCardPositions[index%2]);
+                cardModel->setPosition(ComCardPositions[index%5]);
                 cardModel->setRotation(glm::pi<float>()/2, glm::pi<float>()/2, glm::pi<float>()/2);
-                */
 
                 communityCards.add_cards(card);
-                //handCardsModel.push_back(cardModel);
+                ComCardsModel.push_back(cardModel);
                 index++;
             }
 
