@@ -2,7 +2,7 @@
 <head>
     <title>Hello world</title>
     <link type="text/rcss" href="rml.rcss"/>
-    <link type="text/rcss" href="ip.rcss"/>
+    <link type="text/rcss" href="ip.css"/>
 </head>
 <body data-model="getIp">
     <p>Enter ip:</p>

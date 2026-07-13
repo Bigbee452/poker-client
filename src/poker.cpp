@@ -493,6 +493,9 @@ void PokerClientStateMachine::getComCards(){
 
             int index = 0;
 
+            for(CardModel* cardModel : ComCardsModel){
+                delete cardModel;
+            }
             ComCardsModel.clear();
             while (std::getline(ss, card_str, ',')) {
                 Card card;

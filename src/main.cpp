@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     Window* myWindow = getWindow();
     myWindow->init(SCR_WIDTH, SCR_HEIGHT);
 
-    glm::vec3 cameraPos = glm::vec3(2.0f, 1.0f, 0.0f);  
+    glm::vec3 cameraPos = glm::vec3(1.2f, 2.0f, 0.0f);  
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     myScene->cam->set_pos(cameraPos);
     myScene->cam->set_direction(cameraDirection);
 
-    glm::vec3 lightPos(10.2f, 1.0f, 10.0f);
+    glm::vec3 lightPos(3.2f, 4.0f, 3.0f);
     myScene->light_pos = lightPos;
 
     buildScene(myScene);
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
         lightPos = glm::vec3(lightX, lightY, lightZ);  
 
-        myScene->light_pos = lightPos;
+        //myScene->light_pos = lightPos;
 
         myWindow->render_frame();
 
