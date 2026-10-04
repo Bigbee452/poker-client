@@ -249,6 +249,8 @@ void PokerClientStateMachine::inGame(){
             state = PokerClientState::GetComCards;
             initState();
             return;
+        } else if(msg == "aint startchips"){
+            send_all(socket, startCoins.c_str(), startCoins.size());
         } else {
             cout << "unknown message: " << msg << endl;
         }
